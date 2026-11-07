@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تسجيل المؤتمر</title>
+<style>
+:root{--bg:#f4f6fb;--cd:#fff;--tx:#14213d;--pr:#2457d6;--ok:#16a34a;--bd:#dde3ef}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1524;--cd:#19223a;--tx:#eef2ff;--pr:#6c8cff;--bd:#2c3858}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,"Segoe UI",Tahoma,sans-serif;padding:16px}
+.w{max-width:440px;margin:auto}h1{font-size:20px;text-align:center}
+.c{background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:20px;text-align:center}
+label{display:block;text-align:right;font-size:13px;margin:12px 0 4px;opacity:.8}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
+button{width:100%;margin-top:16px;padding:13px;border:0;border-radius:12px;background:var(--pr);color:#fff;font-size:16px;font-weight:700}
+button.g{background:none;color:var(--pr);border:1px solid var(--bd)}
+.ph{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid var(--pr)}
+.qr{width:220px;max-width:80%;background:#fff;padding:8px;border-radius:12px;margin-top:8px}
+.ok{background:var(--ok);color:#fff;border-radius:10px;padding:8px;margin-bottom:14px;font-weight:700}
+.en{opacity:.7;direction:ltr}.code{font:700 24px monospace;letter-spacing:3px;margin:6px 0}
+.st{padding:8px;border-radius:10px;border:1px dashed var(--bd);margin-top:8px}.st.go{background:var(--ok);color:#fff;border:0}
+.s{font-size:12px;opacity:.7}.er{color:#dc2626;margin-top:10px;font-size:14px}
+#pv{width:90px;height:90px;border-radius:50%;object-fit:cover;background:var(--bg);border:2px dashed var(--bd)}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="config.js"></script></head><body><div class="w"><h1 id="t"></h1><div id="app"></div></div>
+<script>
+firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='conf_card';
+$('#t').textContent=EVENT.title;
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+let me=JSON.parse(localStorage.getItem(LS)||'null'),photo=me?me.photo:'',unsub;
+const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>AL[b%31]).join('');
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
+function closed(){$('#app').innerHTML='<div class="c"><h2>التسجيل مقفول</h2><p>العدد اكتمل أو التسجيل متوقف حالياً.</p></div>'}
+function form(rem){const m=me||{};$('#app').innerHTML=`<div class="c"><img id="pv" src="${m.photo||''}" alt=""><label>صورتك الشخصية</label><input type="file" id="f" accept="image/*">
+<label>الاسم بالعربي</label><input id="n" value="${esc(m.name)}"><label>الاسم بالإنجليزي (زي ما هيتكتب في الشهادة)</label><input id="e" dir="ltr" value="${esc(m.nameEn)}">
+${m.id?'':`<label>الكود الجامعي</label><input id="u" inputmode="numeric"><label>الفرقة</label><select id="y"><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select>`}
+<label>رقم الموبايل</label><input id="p" type="tel" value="${esc(m.phone)}"><div class="er" id="er"></div><button onclick="save()">${m.id?'حفظ التعديل':'تسجيل'}</button>${m.id?'<button class="g" onclick="card()">رجوع</button>':''}
+${rem?`<p class="s">متبقي ${rem} مقعد</p>`:''}</div>`;
+$('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);$('#pv').src=photo}}}
+const err=t=>$('#er').textContent=t;
+async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.trim(),phone:$('#p').value.trim(),photo};
+if(!d.name||!/[A-Za-z]/.test(d.nameEn)||!photo)return err('كمّل الاسم بالعربي والإنجليزي وارفع صورتك');
+try{if(me){await db.doc('students/'+me.id).update(d);me={...me,...d}}
+else{d.univ=$('#u').value.trim().replace(/\//g,'');d.year=$('#y').value;if(!d.univ||!d.phone)return err('اكتب الكود الجامعي والموبايل');
+const id=gen(),cf=db.doc('config/main'),uq=db.doc('uniq/'+d.univ);
+await db.runTransaction(async t=>{const c=await t.get(cf),u=await t.get(uq);
+if(!c.exists||!c.data().open||c.data().count>=c.data().limit)throw'FULL';if(u.exists)throw'DUP';
+t.set(uq,{});t.set(db.doc('students/'+id),{...d,checkedIn:false,at:null,by:null,ts:firebase.firestore.FieldValue.serverTimestamp()});t.update(cf,{count:c.data().count+1})});
+me={id,...d}}
+localStorage.setItem(LS,JSON.stringify(me));card()}catch(x){err(x=='FULL'?'التسجيل اتقفل، العدد اكتمل':x=='DUP'?'الكود الجامعي ده مسجل قبل كده':'حصل خطأ، اتأكد من النت وحاول تاني')}}
+function card(){const q=qrcode(0,'M');q.addData(me.id);q.make();
+$('#app').innerHTML=`<div class="c"><div class="ok">✓ تم تسجيلك بنجاح</div><img class="ph" src="${me.photo}" alt=""><h2>${esc(me.name)}</h2><div class="en">${esc(me.nameEn)}</div>
+<img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div><div id="st" class="st">لم يتم تسجيل الحضور بعد</div>
+<button class="g" onclick="form()">تعديل بياناتي</button><p class="s">الكارت محفوظ على جهازك ويفتح بدون إنترنت، وريه للمنظم على الباب</p></div>`;
+unsub&&unsub();unsub=db.doc('students/'+me.id).onSnapshot(s=>{if(s.exists&&s.data().checkedIn){$('#st').textContent='✓ تم تأكيد حضورك';$('#st').className='st go'}},()=>{})}
+if(me)card();else db.doc('config/main').get().then(s=>{const c=s.data();c&&c.open&&c.count<c.limit?form(c.limit-c.count):closed()}).catch(()=>form());
+</script></body></html>
