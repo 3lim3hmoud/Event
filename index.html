@@ -50,12 +50,22 @@ footer{text-align:center;color:var(--mut);font-size:13px;padding:24px 0 40px}
 .cert small{color:#8a7a3a}.cn{font:400 38px 'Great Vibes',cursive;color:#0f766e;direction:ltr;margin:6px 0;word-break:break-word}.cert .seal{font-size:34px}.cert .ln{height:1px;background:#e8d48a;margin:10px 30px}.cert.mini{padding:14px 10px;margin-top:12px}.mini .cn{font-size:30px}
 #sb{position:fixed;left:12px;right:12px;bottom:12px;z-index:20;max-width:536px;margin:auto;background:#0b3b3cf2;color:#fff;border-radius:18px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;transform:translateY(120px);transition:.4s;backdrop-filter:blur(10px)}#sb.on{transform:none}
 .nt{display:none;background:#fef3c7;color:#92400e;padding:10px 16px;text-align:center;font-weight:700}
+
+#ld{position:fixed;inset:0;z-index:100;background:#fff;display:grid;place-items:center;transition:.5s}#ld.off{opacity:0;pointer-events:none}#ld svg{width:64px;color:var(--p);animation:bt 1s ease-in-out infinite}@keyframes bt{50%{transform:scale(1.25);opacity:.5}}
+#pg{position:fixed;top:0;left:0;height:3px;width:0;z-index:99;background:linear-gradient(90deg,#0d9488,#38bdf8)}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}@keyframes pop{from{opacity:0;transform:scale(.85) translateY(30px)}to{opacity:1;transform:none}}
+.hero h1{animation:up .8s .1s both}.hero p{animation:up .8s .25s both}.ch{animation:up .8s .4s both}.cd{animation:up .8s .55s both}.hero .bd{animation:up .8s both}
+.rv.in .cardx,.rv.in .tl,.rv.in details{animation:up .6s both}.pk .cardx:nth-child(2),.sp .cardx:nth-child(2),.tl:nth-child(2){animation-delay:.08s!important}.pk .cardx:nth-child(3),.sp .cardx:nth-child(3),.tl:nth-child(3){animation-delay:.16s!important}.pk .cardx:nth-child(4),.tl:nth-child(4){animation-delay:.24s!important}.pk .cardx:nth-child(5),.tl:nth-child(5){animation-delay:.32s!important}.tl:nth-child(6){animation-delay:.4s!important}
+.btn{position:relative;overflow:hidden;transition:transform .15s,box-shadow .2s}.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.96)}.btn:not(.g):after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,#fff0,#fff7,#fff0);transform:skewX(-20deg);animation:sh 3.5s infinite}@keyframes sh{to{left:130%}}
+.pk .cardx,.sp .cardx{transition:transform .25s,box-shadow .25s}.pk .cardx:hover,.sp .cardx:hover{transform:translateY(-5px);box-shadow:0 16px 34px #0d948830}
+.tk{animation:pop .7s cubic-bezier(.2,1.4,.4,1)}.meter u{background:linear-gradient(90deg,#fff,#a5f3fc,#fff);background-size:200%;animation:sm 2s linear infinite}@keyframes sm{to{background-position:-200% 0}}
+.lk{background:none;border:0;color:#dc2626;text-decoration:underline;font:13px Cairo,sans-serif;margin:0 0 14px;cursor:pointer}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="config.js"></script></head><body>
+<script src="config.js"></script></head><body><div id="ld"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg></div><div id="pg"></div>
 <header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><a class="btn s" id="hb" href="#reg">سجّل الآن</a></div></header>
 <div id="nt" class="nt"></div><section class="hero" id="hero"><div class="w"><span class="bd">🎓 شهادة حضور معتمدة لكل مشارك</span><h1 id="ttl"></h1><p id="sub"></p><div class="ch" id="ch"></div><div class="cd" id="cd"></div>
 <div class="ms"><div class="meter"><u id="bar"></u></div><span id="left">جاري تحميل المقاعد...</span></div><p style="margin-top:20px"><a class="btn g" href="#reg">احجز مقعدك ←</a></p></div>
@@ -96,7 +106,7 @@ addEventListener('scroll',()=>{const r=$('#reg').getBoundingClientRect();$('#sbt
 const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>AL[b%31]).join('');
 function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
 db.doc('config/main').onSnapshot(s=>{C=s.data();$('#nt').style.display=C&&C.notice?'block':'none';$('#nt').textContent=C&&C.notice?'📢 '+C.notice:'';if(C){const l=Math.max(0,C.limit-C.count);$('#bar').style.width=Math.min(100,C.count/C.limit*100)+'%';$('#left').textContent=!C.open||l==0?'التسجيل مقفول':`🔥 متبقي ${l} مقعد من ${C.limit}`}view()},()=>view());
-function view(){if(ed)return;if(me)return card();if(C&&(!C.open||C.count>=C.limit))return $('#rg').innerHTML='<div class="cardx" style="text-align:center"><h3>التسجيل مقفول</h3><p>العدد اكتمل أو التسجيل متوقف حالياً.</p></div>';form()}
+function view(){if(ed)return;if(me)return card();if(C&&(!C.open||C.count>=C.limit))return wl();form()}
 function form(){const m=me||{};$('#rg').innerHTML=`<div class="cardx"><label class="up" style="margin-bottom:6px"><input type="file" id="f" accept="image/*" hidden>${photo?`<img id="pv" src="${photo}" alt="">`:'<span id="pv">📷<br>صورتك</span>'}</label>
 <label>الاسم بالعربي</label><input id="n" value="${esc(m.name)}" autocomplete="name"><label>الاسم بالإنجليزي (زي ما هيتكتب في الشهادة)</label><input id="e" dir="ltr" value="${esc(m.nameEn)}" oninput="$('#cn2').textContent=this.value||'Your Name'">${cH('cn2',m.nameEn||'Your Name').replace('class="cert"','class="cert mini"')}
 ${m.id?'':`<label>الكود الجامعي</label><input id="u" inputmode="numeric"><label>الفرقة</label><select id="y"><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select>`}
@@ -110,22 +120,23 @@ else{d.univ=$('#u').value.trim().replace(/\//g,'');d.year=$('#y').value;if(!d.un
 const id=gen(),cf=db.doc('config/main'),uq=db.doc('uniq/'+d.univ);
 await db.runTransaction(async t=>{const c=await t.get(cf),u=await t.get(uq);
 if(!c.exists||!c.data().open||c.data().count>=c.data().limit)throw'FULL';if(u.exists)throw'DUP';
-t.set(uq,{});t.set(db.doc('students/'+id),{...d,checkedIn:false,at:null,by:null,ts:firebase.firestore.FieldValue.serverTimestamp()});t.update(cf,{count:c.data().count+1})});
-me={id,...d}}
+t.set(uq,{sid:id});t.set(db.doc('students/'+id),{...d,checkedIn:false,at:null,by:null,ts:firebase.firestore.FieldValue.serverTimestamp()});t.update(cf,{count:c.data().count+1})});
+me={id,...d};setTimeout(confetti,500)}
 localStorage.setItem(LS,JSON.stringify(me));ed=0;card();$('#reg').scrollIntoView()}catch(x){err(x=='FULL'?'التسجيل اتقفل، العدد اكتمل':x=='DUP'?'الكود الجامعي ده مسجل قبل كده':'حصل خطأ، اتأكد من النت وحاول تاني')}}
 function card(){const q=qrcode(0,'M');q.addData(me.id);q.make();$('#hb').textContent='تذكرتي';
 $('#rg').innerHTML=`<div class="cardx tk"><div class="top"><div>✓ تم تسجيلك بنجاح</div><b>${esc(E.title)}</b></div><img class="ph" src="${me.photo}" alt=""><h3 style="margin:8px 0 0">${esc(me.name)}</h3><div dir="ltr" style="color:var(--mut)">${esc(me.nameEn)}</div>
 <small style="color:var(--mut)">${esc([dt,E.time,E.place].filter(Boolean).join(' • '))}</small><div class="sta" style="background:#eff6ff;color:#0369a1">🎓 شهادتك هتتكتب باسم: <span dir="ltr">${esc(me.nameEn)}</span></div><div class="cut"></div><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div>
 <div id="sa" class="sta">بانتظار تأكيد حضورك عند الباب</div><div id="cz" style="padding:0 16px"></div><div class="row"><button class="btn g" onclick="png()">حفظ التذكرة</button><button class="btn g" onclick="ics()">أضف للتقويم</button><button class="btn g" onclick="ed=1;form()">تعديل</button></div>
-<small style="color:var(--mut);display:block;padding:0 16px 16px">التذكرة محفوظة على جهازك وتفتح بدون إنترنت</small></div>`;
-if(localStorage.conf_att==me.id){$('#sa').textContent='✓ تم تأكيد حضورك، شكراً لحضورك';$('#sa').className='sta go';cz()}
-unsub&&unsub();unsub=db.doc('students/'+me.id).onSnapshot(s=>{if(s.exists&&s.data().checkedIn){$('#sa').textContent='✓ تم تأكيد حضورك، شكراً لحضورك';$('#sa').className='sta go';cz()}},()=>{})}
+<small style="color:var(--mut);display:block;padding:0 16px 16px">التذكرة محفوظة على جهازك وتفتح بدون إنترنت</small><button class="lk" onclick="cancelReg()">إلغاء الحجز</button></div>`;
+if(localStorage.conf_att==me.id){$('#sa').textContent='✓ تم تأكيد حضورك، شكراً لحضورك';$('#sa').className='sta go';document.querySelectorAll('.lk').forEach(e=>e.remove());cz()}
+unsub&&unsub();unsub=db.doc('students/'+me.id).onSnapshot(s=>{if(s.exists&&s.data().checkedIn){$('#sa').textContent='✓ تم تأكيد حضورك، شكراً لحضورك';$('#sa').className='sta go';document.querySelectorAll('.lk').forEach(e=>e.remove());cz()}},()=>{})}
 
-let R=0;
+let R={s:0,c:0,o:0,r:''};const SQ=[['s','التقييم العام'],['c','المحتوى العلمي'],['o','التنظيم']];
 function cz(){const el=$('#cz');if(!el)return;localStorage.conf_att=me.id;if(localStorage.conf_fb==me.id)return czBtn();
-el.innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#fffbea"><b>🎓 قيّم المؤتمر وحمّل شهادتك</b><div style="font-size:34px;direction:ltr;cursor:pointer">${[1,2,3,4,5].map(i=>`<span class="sr" onclick="rt(${i})">☆</span>`).join('')}</div><input id="cm" placeholder="رأيك أو اقتراحك (اختياري)" style="margin-top:8px"><button class="btn" style="width:100%;margin-top:10px" onclick="sf()">إرسال وتحميل الشهادة</button></div>`}
-function rt(n){R=n;document.querySelectorAll('.sr').forEach((s,i)=>s.textContent=i<n?'★':'☆')}
-async function sf(){if(!R)return alert('اختار عدد النجوم');try{await db.doc('feedback/'+me.id).set({stars:R,comment:$('#cm').value.trim(),ts:firebase.firestore.FieldValue.serverTimestamp()})}catch(e){}localStorage.conf_fb=me.id;czBtn()}
+el.innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#fffbea"><b>🎓 قيّم المؤتمر (دقيقة واحدة)</b>${SQ.map(([k,l])=>`<div style="margin-top:8px">${l}<div style="font-size:30px;direction:ltr">${[1,2,3,4,5].map(i=>`<span class="sr" data-k="${k}" onclick="rt('${k}',${i})">☆</span>`).join('')}</div></div>`).join('')}<div style="margin-top:8px">هتنصح زمايلك بحضور مؤتمر زي ده؟</div><div class="row" style="padding:6px 0"><button class="btn g" onclick="rc('نعم',this)">نعم 👍</button><button class="btn g" onclick="rc('ممكن',this)">ممكن</button><button class="btn g" onclick="rc('لا',this)">لا</button></div><input id="cm" placeholder="رأيك أو اقتراحك (اختياري)"><button class="btn" style="width:100%;margin-top:10px" onclick="sf()">إرسال</button></div>`}
+function rt(k,n){R[k]=n;document.querySelectorAll('.sr[data-k="'+k+'"]').forEach((e,i)=>e.textContent=i<n?'★':'☆')}
+function rc(v,b){R.r=v;b.parentNode.querySelectorAll('button').forEach(x=>x.className='btn g');b.className='btn'}
+async function sf(){if(!R.s)return alert('قيّم التقييم العام على الأقل');try{await db.doc('feedback/'+me.id).set({stars:R.s,content:R.c||0,org:R.o||0,rec:R.r||'',comment:$('#cm').value.trim(),ts:firebase.firestore.FieldValue.serverTimestamp()})}catch(e){}localStorage.conf_fb=me.id;czBtn()}
 function czBtn(){$('#cz').innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#ecfdf5"><b>🎓 شهادتك جاهزة، شكراً لتقييمك</b><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`}
 async function cert(t){await document.fonts.load('100px "Great Vibes"');const c=document.createElement('canvas');c.width=1754;c.height=1240;const x=c.getContext('2d'),m=877;x.textAlign='center';
 x.fillStyle='#fffdf7';x.fillRect(0,0,1754,1240);x.strokeStyle='#c9a227';x.lineWidth=14;x.strokeRect(40,40,1674,1160);x.lineWidth=3;x.strokeRect(72,72,1610,1096);
@@ -142,6 +153,16 @@ x.strokeStyle='#0b3b3c';x.lineWidth=2;x.beginPath();x.moveTo(250,1085);x.lineTo(
 x.fillStyle='#5b7f80';x.font='26px Georgia,serif';x.fillText(E.organizerEn||E.organizer||'Organizing Committee',425,1125);x.fillText('Organizing Committee',1329,1125);x.font='20px monospace';x.fillText('ID: '+me.id,m,1150);
 if(t=='png'){const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='certificate-'+me.id+'.png';a.click()}
 else{const p=new window.jspdf.jsPDF({orientation:'l',unit:'mm',format:'a4'});p.addImage(c.toDataURL('image/jpeg',.92),'JPEG',0,0,297,210);p.save('certificate-'+me.id+'.pdf')}}
+
+function wl(){if(localStorage.conf_wl)return $('#rg').innerHTML='<div class="cardx" style="text-align:center"><div style="font-size:48px">⏳</div><h3>إنت في قايمة الانتظار</h3><p style="color:var(--mut)">هنتواصل معاك على الموبايل لو فضي مقعد.</p></div>';
+$('#rg').innerHTML=`<div class="cardx"><h3 style="margin:0">المقاعد اكتملت 😔</h3><p style="color:var(--mut)">سجّل في قايمة الانتظار وهنبلغك لو فضي مقعد.</p><label>الاسم بالعربي</label><input id="wn"><label>الاسم بالإنجليزي</label><input id="we" dir="ltr"><label>الكود الجامعي</label><input id="wu" inputmode="numeric"><label>الفرقة</label><select id="wy"><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select><label>رقم الموبايل (واتساب)</label><input id="wp" type="tel"><div class="er" id="er"></div><button class="btn" style="width:100%;margin-top:14px" onclick="joinWl()">انضم لقايمة الانتظار</button></div>`}
+async function joinWl(){const d={name:$('#wn').value.trim(),nameEn:$('#we').value.trim(),univ:$('#wu').value.trim().replace(/\//g,''),year:$('#wy').value,phone:$('#wp').value.trim()};if(!d.name||!d.univ||!d.phone)return err('كمّل الاسم والكود والموبايل');
+try{await db.doc('waitlist/'+d.univ).set({...d,ts:firebase.firestore.FieldValue.serverTimestamp()});localStorage.conf_wl=1;wl();confetti()}catch(e){err('إنت مسجل في الانتظار قبل كده أو حصل خطأ')}}
+async function cancelReg(){if(!confirm('تأكيد إلغاء حجزك؟ هيتلغي مقعدك وتذكرتك.'))return;try{const cf=db.doc('config/main');await db.runTransaction(async t=>{const c=await t.get(cf);t.delete(db.doc('students/'+me.id));t.delete(db.doc('uniq/'+me.univ));if(c.exists&&c.data().count>0)t.update(cf,{count:c.data().count-1})});
+['conf_card','conf_att','conf_fb'].forEach(k=>localStorage.removeItem(k));unsub&&unsub();me=null;photo='';$('#hb').textContent='سجّل الآن';view()}catch(e){alert('مقدرتش ألغي الحجز، حاول تاني أو كلّم المنظمين')}}
+function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;z-index:98;pointer-events:none';c.width=innerWidth;c.height=innerHeight;document.body.appendChild(c);const x=c.getContext('2d'),P=Array.from({length:150},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,r:4+Math.random()*6,vx:Math.random()*4-2,vy:2+Math.random()*4,c:['#0d9488','#38bdf8','#fde047','#fb7185','#34d399'][Math.floor(Math.random()*5)]}));let f=0;(function a(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.r,p.r*1.6)});if(++f<180)requestAnimationFrame(a);else c.remove()})()}
+addEventListener('load',()=>setTimeout(()=>$('#ld').classList.add('off'),450));setTimeout(()=>$('#ld').classList.add('off'),2500);
+addEventListener('scroll',()=>{$('#pg').style.width=scrollY/Math.max(1,document.body.scrollHeight-innerHeight)*100+'%'});
 function ics(){if(!D)return;const f=d=>d.toISOString().replace(/[-:]|\.\d+/g,''),e=new Date(+D+(E.hours||4)*36e5),t=`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${f(D)}\nDTEND:${f(e)}\nSUMMARY:${E.title}\nLOCATION:${E.place||''}\nEND:VEVENT\nEND:VCALENDAR`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/calendar'}));a.download='event.ics';a.click()}
 function png(){const q=qrcode(0,'M');q.addData(me.id);q.make();const L=s=>new Promise(r=>{const i=new Image;i.onload=()=>r(i);i.src=s});
 Promise.all([L(me.photo),L(q.createDataURL(8))]).then(([p,Q])=>{const c=document.createElement('canvas');c.width=600;c.height=880;const x=c.getContext('2d');x.direction='rtl';x.textAlign='center';x.fillStyle='#fff';x.fillRect(0,0,600,880);
