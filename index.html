@@ -1,41 +1,86 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تسجيل المؤتمر</title>
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0ea5a4"><title>تسجيل المؤتمر</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f6fb;--cd:#fff;--tx:#14213d;--pr:#2457d6;--ok:#16a34a;--bd:#dde3ef}
-@media(prefers-color-scheme:dark){:root{--bg:#0f1524;--cd:#19223a;--tx:#eef2ff;--pr:#6c8cff;--bd:#2c3858}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,"Segoe UI",Tahoma,sans-serif;padding:16px}
-.w{max-width:440px;margin:auto}h1{font-size:20px;text-align:center}
-.c{background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:20px;text-align:center}
-label{display:block;text-align:right;font-size:13px;margin:12px 0 4px;opacity:.8}
-input,select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
-button{width:100%;margin-top:16px;padding:13px;border:0;border-radius:12px;background:var(--pr);color:#fff;font-size:16px;font-weight:700}
-button.g{background:none;color:var(--pr);border:1px solid var(--bd)}
-.ph{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid var(--pr)}
-.qr{width:220px;max-width:80%;background:#fff;padding:8px;border-radius:12px;margin-top:8px}
-.ok{background:var(--ok);color:#fff;border-radius:10px;padding:8px;margin-bottom:14px;font-weight:700}
-.en{opacity:.7;direction:ltr}.code{font:700 24px monospace;letter-spacing:3px;margin:6px 0}
-.st{padding:8px;border-radius:10px;border:1px dashed var(--bd);margin-top:8px}.st.go{background:var(--ok);color:#fff;border:0}
-.s{font-size:12px;opacity:.7}.er{color:#dc2626;margin-top:10px;font-size:14px}
-#pv{width:90px;height:90px;border-radius:50%;object-fit:cover;background:var(--bg);border:2px dashed var(--bd)}
+:root{--p:#0d9488;--p2:#38bdf8;--bg:#f0fbfb;--ink:#0b3b3c;--mut:#5b7f80;--bd:#d3ecec;--ok:#16a34a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Cairo,system-ui,Tahoma,sans-serif}
+.w{max-width:560px;margin:auto;padding:0 16px}
+header{position:sticky;top:0;z-index:9;background:#fffc;backdrop-filter:blur(10px);border-bottom:1px solid var(--bd)}
+header .w{display:flex;align-items:center;justify-content:space-between;height:56px}
+.lg{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}.lg svg{width:26px;color:var(--p)}
+.btn{display:inline-block;border:0;border-radius:14px;padding:12px 20px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font:700 16px Cairo,sans-serif;text-decoration:none;cursor:pointer;box-shadow:0 8px 20px #0d948833}
+.btn.s{padding:8px 14px;font-size:14px;border-radius:10px}.btn.g{background:#fff;color:var(--p);border:1px solid var(--bd);box-shadow:none}
+.hero{position:relative;overflow:hidden;color:#fff;text-align:center;padding:44px 0 56px;background:linear-gradient(160deg,#0f766e,#0d9488 45%,#38bdf8)}
+.hero:before{content:"";position:absolute;inset:0;background:var(--cv) center/cover;opacity:.25}
+.hero .w{position:relative}.bd{display:inline-block;background:#fff3;border:1px solid #fff5;border-radius:99px;padding:4px 14px;font-size:13px}
+.hero h1{font-size:28px;font-weight:800;margin:14px 0 6px;line-height:1.35}.hero p{margin:0;opacity:.92}
+.ecg{position:absolute;left:0;right:0;bottom:10px;width:100%;height:60px;opacity:.5}.ecg path{stroke-dasharray:900;animation:dr 4s linear infinite}
+@keyframes dr{from{stroke-dashoffset:900}to{stroke-dashoffset:-900}}
+.ch{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:20px 0}.ch span{background:#ffffff26;border-radius:12px;padding:7px 12px;font-size:14px}
+.cd{display:flex;gap:8px;justify-content:center;margin:18px 0}.cd div{background:#fff;color:var(--ink);border-radius:14px;min-width:64px;padding:8px 4px}.cd b{display:block;font-size:24px;color:var(--p)}.cd small{font-size:12px;color:var(--mut)}
+.sec{padding:30px 0}h2{font-size:21px;margin:0 0 14px}h2:before{content:"";display:inline-block;width:6px;height:20px;background:var(--p);border-radius:4px;margin-left:8px;vertical-align:-3px}
+.cardx{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:18px;box-shadow:0 10px 30px #0d948812}
+.tl{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--bd)}.tl:last-child{border:0}.tl b{color:var(--p);min-width:52px;direction:ltr}
+.sp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.sp .cardx{text-align:center;padding:14px}
+.av{width:72px;height:72px;border-radius:50%;margin:0 auto 8px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;display:grid;place-items:center;font-size:26px;font-weight:800;object-fit:cover}.sp small{color:var(--mut)}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}.st div{font-size:13px}.st i{display:grid;place-items:center;width:46px;height:46px;margin:0 auto 6px;border-radius:50%;background:#ccfbf1;font-style:normal;font-size:22px}
+.meter{height:10px;background:#ffffff40;border-radius:9px;overflow:hidden;margin:6px 0}.meter u{display:block;height:100%;width:0;background:#fff;border-radius:9px;transition:width 1s}
+.ms{max-width:340px;margin:16px auto 0;font-size:14px}
+label{display:block;font-size:13px;margin:12px 0 4px;color:var(--mut);font-weight:600}
+input,select{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--bd);background:#f8fdfd;font:16px Cairo,sans-serif;color:var(--ink)}input:focus,select:focus{outline:0;border-color:var(--p)}
+.up{display:grid;place-items:center;width:96px;height:96px;margin:0 auto;border-radius:50%;border:2px dashed var(--p);color:var(--p);cursor:pointer;overflow:hidden;font-size:12px;text-align:center}.up img{width:100%;height:100%;object-fit:cover}
+.er{color:#dc2626;font-size:14px;margin-top:10px}.tk{padding:0;overflow:hidden;text-align:center}
+.tk .top{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:16px}.tk .top b{font-size:17px}
+.ph{width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid #fff;margin-top:-6px;box-shadow:0 6px 16px #0003}
+.cut{border-top:2px dashed var(--bd);margin:14px 12px;position:relative}
+.qr{width:210px;max-width:70%;background:#fff;padding:8px;border-radius:14px;border:1px solid var(--bd)}
+.code{font:800 24px monospace;letter-spacing:4px}.sta{margin:10px 16px;padding:9px;border-radius:12px;background:#ecfdf5;color:var(--ok);font-weight:700}.sta.go{background:var(--ok);color:#fff}
+.row{display:flex;gap:8px;padding:0 16px 16px}.row .btn{flex:1;padding:10px 4px;font-size:14px}
+details{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:12px 16px;margin-bottom:8px}summary{font-weight:700;cursor:pointer}details p{color:var(--mut);margin:8px 0 0}
+footer{text-align:center;color:var(--mut);font-size:13px;padding:24px 0 40px}
+.rv{opacity:0;transform:translateY(18px);transition:.6s}.rv.in{opacity:1;transform:none}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-<script src="config.js"></script></head><body><div class="w"><h1 id="t"></h1><div id="app"></div></div>
+<script src="config.js"></script></head><body>
+<header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><a class="btn s" id="hb" href="#reg">سجّل الآن</a></div></header>
+<section class="hero" id="hero"><div class="w"><span class="bd">🩺 مؤتمر علمي</span><h1 id="ttl"></h1><p id="sub"></p><div class="ch" id="ch"></div><div class="cd" id="cd"></div>
+<div class="ms"><div class="meter"><u id="bar"></u></div><span id="left">جاري تحميل المقاعد...</span></div><p style="margin-top:20px"><a class="btn g" href="#reg">احجز مقعدك ←</a></p></div>
+<svg class="ecg" viewBox="0 0 600 60" preserveAspectRatio="none"><path d="M0 30H120L140 8L165 52L185 30H320L340 8L365 52L385 30H600" fill="none" stroke="#fff" stroke-width="2.5"/></svg></section>
+<main class="w">
+<section class="sec rv"><h2>عن المؤتمر</h2><div class="cardx" id="ab"></div></section>
+<section class="sec rv"><h2>برنامج اليوم</h2><div class="cardx" id="ag"></div></section>
+<section class="sec rv" id="spw"><h2>المحاضرون</h2><div class="sp" id="sp"></div></section>
+<section class="sec rv"><h2>خطوات الحضور</h2><div class="cardx st"><div><i>📝</i>سجّل بياناتك</div><div><i>📲</i>استلم تذكرة QR</div><div><i>✅</i>أظهرها عند الباب</div></div></section>
+<section class="sec rv" id="reg"><h2>التسجيل</h2><div id="rg"></div></section>
+<section class="sec rv"><h2>أسئلة شائعة</h2><div id="fq"></div></section></main>
+<footer id="ft"></footer>
 <script>
-firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='conf_card';
-$('#t').textContent=EVENT.title;
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
-let me=JSON.parse(localStorage.getItem(LS)||'null'),photo=me?me.photo:'',unsub;
-const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>AL[b%31]).join('');
+firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='conf_card',E=EVENT,D=E.date?new Date(E.date):null;
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+let me=JSON.parse(localStorage.getItem(LS)||'null'),photo=me?me.photo:'',unsub,C=null,ed=0;
+document.title=E.title;$('#hn').textContent=E.title.slice(0,22);$('#ttl').textContent=E.title;$('#sub').textContent=E.sub||'';
+if(E.cover)$('#hero').style.setProperty('--cv',`url(${E.cover})`);
+const dt=D?D.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'';
+$('#ch').innerHTML=[dt&&'📅 '+dt,E.time&&'🕐 '+E.time,E.place&&'📍 '+E.place].filter(Boolean).map(t=>`<span>${esc(t)}</span>`).join('');
+$('#ab').textContent=E.about||'';$('#ft').textContent='تنظيم: '+(E.organizer||'');
+$('#ag').innerHTML=(E.agenda||[]).map(a=>`<div class="tl"><b>${esc(a.t)}</b><span>${esc(a.title)}</span></div>`).join('');
+$('#sp').innerHTML=(E.speakers||[]).map(s=>`<div class="cardx">${s.img?`<img class="av" src="${esc(s.img)}" alt="">`:`<div class="av">${esc(s.name.replace(/^(د\.|أ\.|أ\.د\.)\s*/,'')[0])}</div>`}<b>${esc(s.name)}</b><br><small>${esc(s.role)}</small></div>`).join('');
+if(!(E.speakers||[]).length)$('#spw').remove();
+$('#fq').innerHTML=(E.faq||[]).map(f=>`<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('');
+function tick(){if(!D)return;let d=D-Date.now();if(d<=0){$('#cd').innerHTML='<b>المؤتمر بدأ 🎉</b>';return}const u=[['يوم',864e5],['ساعة',36e5],['دقيقة',6e4],['ثانية',1e3]];
+$('#cd').innerHTML=u.map(([n,m])=>{const v=Math.floor(d/m);d%=m;return`<div><b>${v}</b><small>${n}</small></div>`}).join('')}tick();setInterval(tick,1000);
+document.querySelectorAll('.rv').forEach(el=>{const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){el.classList.add('in');o.disconnect()}},{threshold:.1});o.observe(el)});
+const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>AL[b%31]).join('');
 function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
-function closed(){$('#app').innerHTML='<div class="c"><h2>التسجيل مقفول</h2><p>العدد اكتمل أو التسجيل متوقف حالياً.</p></div>'}
-function form(rem){const m=me||{};$('#app').innerHTML=`<div class="c"><img id="pv" src="${m.photo||''}" alt=""><label>صورتك الشخصية</label><input type="file" id="f" accept="image/*">
-<label>الاسم بالعربي</label><input id="n" value="${esc(m.name)}"><label>الاسم بالإنجليزي (زي ما هيتكتب في الشهادة)</label><input id="e" dir="ltr" value="${esc(m.nameEn)}">
+db.doc('config/main').onSnapshot(s=>{C=s.data();if(C){const l=Math.max(0,C.limit-C.count);$('#bar').style.width=Math.min(100,C.count/C.limit*100)+'%';$('#left').textContent=!C.open||l==0?'التسجيل مقفول':`🔥 متبقي ${l} مقعد من ${C.limit}`}view()},()=>view());
+function view(){if(ed)return;if(me)return card();if(C&&(!C.open||C.count>=C.limit))return $('#rg').innerHTML='<div class="cardx" style="text-align:center"><h3>التسجيل مقفول</h3><p>العدد اكتمل أو التسجيل متوقف حالياً.</p></div>';form()}
+function form(){const m=me||{};$('#rg').innerHTML=`<div class="cardx"><label class="up" style="margin-bottom:6px"><input type="file" id="f" accept="image/*" hidden>${photo?`<img id="pv" src="${photo}" alt="">`:'<span id="pv">📷<br>صورتك</span>'}</label>
+<label>الاسم بالعربي</label><input id="n" value="${esc(m.name)}" autocomplete="name"><label>الاسم بالإنجليزي (زي ما هيتكتب في الشهادة)</label><input id="e" dir="ltr" value="${esc(m.nameEn)}">
 ${m.id?'':`<label>الكود الجامعي</label><input id="u" inputmode="numeric"><label>الفرقة</label><select id="y"><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select>`}
-<label>رقم الموبايل</label><input id="p" type="tel" value="${esc(m.phone)}"><div class="er" id="er"></div><button onclick="save()">${m.id?'حفظ التعديل':'تسجيل'}</button>${m.id?'<button class="g" onclick="card()">رجوع</button>':''}
-${rem?`<p class="s">متبقي ${rem} مقعد</p>`:''}</div>`;
-$('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);$('#pv').src=photo}}}
+<label>رقم الموبايل</label><input id="p" type="tel" value="${esc(m.phone)}"><div class="er" id="er"></div><button class="btn" style="width:100%;margin-top:16px" onclick="save()">${m.id?'حفظ التعديل':'تأكيد التسجيل'}</button>${m.id?'<button class="btn g" style="width:100%;margin-top:8px" onclick="ed=0;card()">رجوع</button>':''}</div>`;
+$('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);const p=$('#pv');p.outerHTML=`<img id="pv" src="${photo}" alt="">`}}}
 const err=t=>$('#er').textContent=t;
 async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.trim(),phone:$('#p').value.trim(),photo};
 if(!d.name||!/[A-Za-z]/.test(d.nameEn)||!photo)return err('كمّل الاسم بالعربي والإنجليزي وارفع صورتك');
@@ -46,11 +91,19 @@ await db.runTransaction(async t=>{const c=await t.get(cf),u=await t.get(uq);
 if(!c.exists||!c.data().open||c.data().count>=c.data().limit)throw'FULL';if(u.exists)throw'DUP';
 t.set(uq,{});t.set(db.doc('students/'+id),{...d,checkedIn:false,at:null,by:null,ts:firebase.firestore.FieldValue.serverTimestamp()});t.update(cf,{count:c.data().count+1})});
 me={id,...d}}
-localStorage.setItem(LS,JSON.stringify(me));card()}catch(x){err(x=='FULL'?'التسجيل اتقفل، العدد اكتمل':x=='DUP'?'الكود الجامعي ده مسجل قبل كده':'حصل خطأ، اتأكد من النت وحاول تاني')}}
-function card(){const q=qrcode(0,'M');q.addData(me.id);q.make();
-$('#app').innerHTML=`<div class="c"><div class="ok">✓ تم تسجيلك بنجاح</div><img class="ph" src="${me.photo}" alt=""><h2>${esc(me.name)}</h2><div class="en">${esc(me.nameEn)}</div>
-<img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div><div id="st" class="st">لم يتم تسجيل الحضور بعد</div>
-<button class="g" onclick="form()">تعديل بياناتي</button><p class="s">الكارت محفوظ على جهازك ويفتح بدون إنترنت، وريه للمنظم على الباب</p></div>`;
-unsub&&unsub();unsub=db.doc('students/'+me.id).onSnapshot(s=>{if(s.exists&&s.data().checkedIn){$('#st').textContent='✓ تم تأكيد حضورك';$('#st').className='st go'}},()=>{})}
-if(me)card();else db.doc('config/main').get().then(s=>{const c=s.data();c&&c.open&&c.count<c.limit?form(c.limit-c.count):closed()}).catch(()=>form());
+localStorage.setItem(LS,JSON.stringify(me));ed=0;card();$('#reg').scrollIntoView()}catch(x){err(x=='FULL'?'التسجيل اتقفل، العدد اكتمل':x=='DUP'?'الكود الجامعي ده مسجل قبل كده':'حصل خطأ، اتأكد من النت وحاول تاني')}}
+function card(){const q=qrcode(0,'M');q.addData(me.id);q.make();$('#hb').textContent='تذكرتي';
+$('#rg').innerHTML=`<div class="cardx tk"><div class="top"><div>✓ تم تسجيلك بنجاح</div><b>${esc(E.title)}</b></div><img class="ph" src="${me.photo}" alt=""><h3 style="margin:8px 0 0">${esc(me.name)}</h3><div dir="ltr" style="color:var(--mut)">${esc(me.nameEn)}</div>
+<small style="color:var(--mut)">${esc([dt,E.time,E.place].filter(Boolean).join(' • '))}</small><div class="cut"></div><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div>
+<div id="sa" class="sta">بانتظار تأكيد حضورك عند الباب</div><div class="row"><button class="btn g" onclick="png()">حفظ التذكرة</button><button class="btn g" onclick="ics()">أضف للتقويم</button><button class="btn g" onclick="ed=1;form()">تعديل</button></div>
+<small style="color:var(--mut);display:block;padding:0 16px 16px">التذكرة محفوظة على جهازك وتفتح بدون إنترنت</small></div>`;
+unsub&&unsub();unsub=db.doc('students/'+me.id).onSnapshot(s=>{if(s.exists&&s.data().checkedIn){$('#sa').textContent='✓ تم تأكيد حضورك، شكراً لحضورك';$('#sa').className='sta go'}},()=>{})}
+function ics(){if(!D)return;const f=d=>d.toISOString().replace(/[-:]|\.\d+/g,''),e=new Date(+D+(E.hours||4)*36e5),t=`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${f(D)}\nDTEND:${f(e)}\nSUMMARY:${E.title}\nLOCATION:${E.place||''}\nEND:VEVENT\nEND:VCALENDAR`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/calendar'}));a.download='event.ics';a.click()}
+function png(){const q=qrcode(0,'M');q.addData(me.id);q.make();const L=s=>new Promise(r=>{const i=new Image;i.onload=()=>r(i);i.src=s});
+Promise.all([L(me.photo),L(q.createDataURL(8))]).then(([p,Q])=>{const c=document.createElement('canvas');c.width=600;c.height=880;const x=c.getContext('2d');x.direction='rtl';x.textAlign='center';x.fillStyle='#fff';x.fillRect(0,0,600,880);
+const g=x.createLinearGradient(0,0,600,0);g.addColorStop(0,'#0d9488');g.addColorStop(1,'#38bdf8');x.fillStyle=g;x.fillRect(0,0,600,150);x.fillStyle='#fff';x.font='bold 32px Cairo,sans-serif';x.fillText(E.title,300,90);
+x.save();x.beginPath();x.arc(300,190,60,0,7);x.clip();x.drawImage(p,240,130,120,120);x.restore();x.lineWidth=5;x.strokeStyle='#fff';x.beginPath();x.arc(300,190,60,0,7);x.stroke();
+x.fillStyle='#0b3b3c';x.font='bold 34px Cairo,sans-serif';x.fillText(me.name,300,310);x.fillStyle='#5b7f80';x.font='26px sans-serif';x.fillText(me.nameEn,300,350);
+x.drawImage(Q,150,390,300,300);x.fillStyle='#0b3b3c';x.font='bold 40px monospace';x.fillText(me.id,300,745);x.fillStyle='#5b7f80';x.font='22px Cairo,sans-serif';x.fillText([dt,E.place].filter(Boolean).join(' • '),300,810);
+const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='ticket-'+me.id+'.png';a.click()})}
 </script></body></html>
