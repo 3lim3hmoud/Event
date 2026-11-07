@@ -2,6 +2,7 @@ window.FB={apiKey:"AIzaSyCT-vkWBoxvhKPUisNEGRgUWnwXkb5PwQE",authDomain:"event-11
 // ===== بيانات المؤتمر: عدّلها بحرية =====
 window.EVENT={
  title:"المؤتمر العلمي لكلية التمريض",
+ titleEn:"Nursing College Scientific Conference", organizerEn:"Nursing Students Union",
  sub:"علم يُنقذ الأرواح .. وخبرة تصنع الفرق",
  date:"2026-12-20T10:00:00+02:00", hours:5,
  time:"10:00 صباحاً", place:"قاعة المؤتمرات - الكلية",
