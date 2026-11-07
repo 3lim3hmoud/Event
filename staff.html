@@ -22,7 +22,7 @@ button{padding:10px 14px;border:0;border-radius:10px;background:var(--pr);color:
 <div id="lg" class="c"><h2>دخول</h2><input id="code" placeholder="كود المساعد" autocapitalize="characters"><button onclick="loginStaff()">دخول</button>
 <hr><small>أدمن؟</small><input id="em" type="email" placeholder="الإيميل" dir="ltr"><input id="pw" type="password" placeholder="الباسورد" dir="ltr"><button class="g" onclick="loginAdmin()">دخول الأدمن</button></div>
 <div id="mn" class="hide"><div class="c"><button id="b1" onclick="tab(1)">الماسح</button><button id="b2" class="g hide" onclick="tab(2)">لوحة التحكم</button></div>
-<div id="t1"><div class="c"><div id="rd"></div><div class="row"><input id="man" placeholder="أو اكتب كود الطالب" dir="ltr" autocapitalize="characters"><button onclick="go($('#man').value)">تأكيد</button></div></div><div id="res"></div></div>
+<div id="t1"><div class="c"><div id="rd"></div><div id="rd2" class="hide"></div><div id="ce" style="color:#dc2626;font-size:14px;margin-top:8px"></div><button class="g" onclick="scan()">تشغيل الكاميرا</button><button class="g" onclick="$('#fl').click()">صوّر QR</button><input id="fl" type="file" accept="image/*" capture="environment" class="hide" onchange="fscan(this)"><div class="row"><input id="man" placeholder="أو اكتب كود الطالب" dir="ltr" autocapitalize="characters"><button onclick="go($('#man').value)">تأكيد</button></div></div><div id="res"></div></div>
 <div id="t2" class="hide"><div class="c st"><div><b id="s1">0</b>مسجل</div><div><b id="s2">0</b>حضر</div><div><b id="s3">0</b>لم يحضر</div><div><b id="s4">0</b>الحد</div></div>
 <div class="c"><b>الإعدادات</b><div class="row"><input id="lim" type="number" placeholder="الحد الأقصى"><button onclick="setLim()">حفظ</button></div><button id="op" class="g" onclick="toggleOpen()"></button></div>
 <div class="c"><b>أكواد المساعدين</b><div class="row"><input id="nc" placeholder="كود جديد" dir="ltr" autocapitalize="characters"><button onclick="addCode()">إضافة</button></div><div id="cl"></div></div>
@@ -40,7 +40,9 @@ db.doc('config/main').onSnapshot(s=>{if(!s.exists)return;cfg=s.data();$('#s4').t
 db.collection('students').orderBy('ts').onSnapshot(s=>{stu=s.docs.map(d=>({id:d.id,...d.data()}));draw()});
 db.collection('staff').onSnapshot(s=>{$('#cl').innerHTML=s.docs.map(d=>`<span class="tag">${esc(d.id)} <a href="#" onclick="db.doc('staff/${d.id}').delete();return false">✕</a></span> `).join('')})}
 function tab(n){$('#t1').classList.toggle('hide',n!=1);$('#t2').classList.toggle('hide',n!=2);$('#b1').className=n==1?'':'g';$('#b2').className=(n==2?'':'g')+(isA?'':' hide')}
-function scan(){sc=new Html5Qrcode('rd');sc.start({facingMode:'environment'},{fps:10,qrbox:240},t=>go(t)).catch(()=>{})}
+function scan(){$('#ce').textContent='';try{sc&&sc.isScanning&&sc.stop()}catch(e){}
+sc=new Html5Qrcode('rd');sc.start({facingMode:'environment'},{fps:10,qrbox:{width:220,height:220}},t=>go(t)).catch(e=>{$('#ce').textContent='الكاميرا مش شغالة: اسمح للكاميرا من إعدادات المتصفح وافتح اللينك في Chrome مش من جوه واتساب أو فيسبوك. أو استخدم زر "صوّر QR" تحت. ('+(e&&e.name||e)+')'})}
+async function fscan(i){const f=i.files[0];if(!f)return;try{go(await new Html5Qrcode('rd2').scanFile(f,false))}catch(e){show('r','مقدرش يقرأ الـQR، صوّر تاني أقرب وفي إضاءة أحسن')}i.value=''}
 function show(c,m,d){const r=$('#res');r.className=c;r.style.display='block';r.innerHTML=(d?`<img src="${d.photo}"><div>${esc(d.name)}</div><div dir="ltr">${esc(d.nameEn)}</div>`:'')+`<div>${m}</div>`;if(navigator.vibrate)navigator.vibrate(c=='g'?80:[200,100,200])}
 async function go(raw){if(busy)return;busy=1;setTimeout(()=>busy=0,2500);const id=String(raw).trim().toUpperCase().replace(/\//g,'');if(!id)return;$('#man').value='';
 try{const ref=db.doc('students/'+id),s=await ref.get();if(!s.exists)return show('r','كود غير صحيح');const d=s.data();
