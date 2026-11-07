@@ -19,6 +19,10 @@ service cloud.firestore {
     || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','nameEn','photo','phone']);
   }
   match /staff/{c} { allow get: if true; allow write, list: if admin(); }
+  match /feedback/{id} {
+   allow create: if request.resource.data.keys().hasOnly(['stars','comment','ts']) && request.resource.data.stars in [1,2,3,4,5];
+   allow get, list, delete: if admin();
+  }
   match /uniq/{u} { allow get, create: if true; allow delete: if admin(); }
  }
 }
