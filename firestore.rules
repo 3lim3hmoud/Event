@@ -6,12 +6,13 @@ service cloud.firestore {
    allow get: if true;
    allow write: if admin();
    allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count'])
-     && request.resource.data.count==resource.data.count+1
-     && request.resource.data.count<=resource.data.limit;
+     && ((request.resource.data.count==resource.data.count+1 && request.resource.data.count<=resource.data.limit)
+      || (request.resource.data.count==resource.data.count-1 && request.resource.data.count>=0));
   }
   match /students/{id} {
    allow get: if true;
-   allow list, delete: if admin();
+   allow list: if admin();
+   allow delete: if admin() || resource.data.checkedIn==false;
    allow create: if get(/databases/$(db)/documents/config/main).data.open==true && request.resource.data.checkedIn==false;
    allow update: if admin()
     || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checkedIn','at','by'])
@@ -20,9 +21,16 @@ service cloud.firestore {
   }
   match /staff/{c} { allow get: if true; allow write, list: if admin(); }
   match /feedback/{id} {
-   allow create: if request.resource.data.keys().hasOnly(['stars','comment','ts']) && request.resource.data.stars in [1,2,3,4,5];
+   allow create: if request.resource.data.keys().hasOnly(['stars','content','org','rec','comment','ts']) && request.resource.data.stars in [1,2,3,4,5];
    allow get, list, delete: if admin();
   }
-  match /uniq/{u} { allow get, create: if true; allow delete: if admin(); }
+  match /waitlist/{u} {
+   allow create: if request.resource.data.keys().hasOnly(['name','nameEn','univ','year','phone','ts']);
+   allow get, list, delete: if admin();
+  }
+  match /uniq/{u} {
+   allow get, create: if true;
+   allow delete: if admin() || !existsAfter(/databases/$(db)/documents/students/$(resource.data.sid));
+  }
  }
 }
