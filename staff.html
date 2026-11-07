@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>إدارة الحضور</title>
 <style>
-:root{--bg:#f4f6fb;--cd:#fff;--tx:#14213d;--pr:#2457d6;--bd:#dde3ef}
-@media(prefers-color-scheme:dark){:root{--bg:#0f1524;--cd:#19223a;--tx:#eef2ff;--pr:#6c8cff;--bd:#2c3858}}
+:root{--bg:#f0fbfb;--cd:#fff;--tx:#0b3b3c;--pr:#0d9488;--bd:#d3ecec}
+.c{box-shadow:0 8px 24px #0d94880f}button{background:linear-gradient(135deg,#0d9488,#38bdf8)}button.g{background:#fff}.meter{height:10px;background:#e0f2f1;border-radius:9px;overflow:hidden;margin-top:4px}.meter u{display:block;height:100%;background:#99f6e4;border-radius:9px}.meter i{display:block;height:100%;background:#0d9488}#res{font-size:20px;box-shadow:0 10px 30px #0003}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,"Segoe UI",Tahoma,sans-serif;padding:12px}
 .w{max-width:900px;margin:auto}.c{background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
 input{padding:11px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px;width:100%;margin-top:8px}
@@ -24,7 +24,8 @@ button{padding:10px 14px;border:0;border-radius:10px;background:var(--pr);color:
 <div id="mn" class="hide"><div class="c"><button id="b1" onclick="tab(1)">الماسح</button><button id="b2" class="g hide" onclick="tab(2)">لوحة التحكم</button></div>
 <div id="t1"><div class="c"><div id="rd"></div><div id="rd2" class="hide"></div><div id="ce" style="color:#dc2626;font-size:14px;margin-top:8px"></div><button class="g" onclick="scan()">تشغيل الكاميرا</button><button class="g" onclick="$('#fl').click()">صوّر QR</button><input id="fl" type="file" accept="image/*" capture="environment" class="hide" onchange="fscan(this)"><div class="row"><input id="man" placeholder="أو اكتب كود الطالب" dir="ltr" autocapitalize="characters"><button onclick="go($('#man').value)">تأكيد</button></div></div><div id="res"></div></div>
 <div id="t2" class="hide"><div class="c st"><div><b id="s1">0</b>مسجل</div><div><b id="s2">0</b>حضر</div><div><b id="s3">0</b>لم يحضر</div><div><b id="s4">0</b>الحد</div></div>
-<div class="c"><b>الإعدادات</b><div class="row"><input id="lim" type="number" placeholder="الحد الأقصى"><button onclick="setLim()">حفظ</button></div><button id="op" class="g" onclick="toggleOpen()"></button></div>
+<div class="c"><b>تحليلات الحضور</b><div id="an"></div><div id="fb" style="margin-top:10px;font-size:14px"></div></div>
+<div class="c"><b>الإعدادات</b><div class="row"><input id="lim" type="number" placeholder="الحد الأقصى"><button onclick="setLim()">حفظ</button></div><div class="row"><input id="nt" placeholder="إعلان يظهر للطلاب (اتركه فاضي للإخفاء)"><button onclick="setNt()">نشر</button></div><button id="op" class="g" onclick="toggleOpen()"></button></div>
 <div class="c"><b>أكواد المساعدين</b><div class="row"><input id="nc" placeholder="كود جديد" dir="ltr" autocapitalize="characters"><button onclick="addCode()">إضافة</button></div><div id="cl"></div></div>
 <div class="c"><div class="row"><input id="q" placeholder="بحث بالاسم أو الكود" oninput="draw()"></div><button onclick="ex(0)">Excel الحاضرين</button><button class="g" onclick="ex(1)">Excel الكل</button>
 <div class="tb"><table><thead><tr><th></th><th>الاسم</th><th>Name</th><th>الكود</th><th>الفرقة</th><th>الحالة</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div></div></div></div>
@@ -36,8 +37,9 @@ async function loginStaff(){const c=$('#code').value.trim().toUpperCase();try{co
 async function loginAdmin(){try{await auth.signInWithEmailAndPassword($('#em').value,$('#pw').value);by='admin';start(1)}catch(e){alert('بيانات غلط')}}
 function start(a){isA=a;$('#lg').classList.add('hide');$('#mn').classList.remove('hide');tab(1);scan();if(!a)return;$('#b2').classList.remove('hide');
 db.doc('config/main').get().then(s=>{if(!s.exists)db.doc('config/main').set({limit:300,open:true,count:0})});
-db.doc('config/main').onSnapshot(s=>{if(!s.exists)return;cfg=s.data();$('#s4').textContent=cfg.limit;$('#lim').value=cfg.limit;$('#op').textContent=cfg.open?'التسجيل مفتوح (اضغط للقفل)':'التسجيل مقفول (اضغط للفتح)'});
+db.doc('config/main').onSnapshot(s=>{if(!s.exists)return;cfg=s.data();$('#s4').textContent=cfg.limit;$('#lim').value=cfg.limit;if(document.activeElement!==$('#nt'))$('#nt').value=cfg.notice||'';$('#op').textContent=cfg.open?'التسجيل مفتوح (اضغط للقفل)':'التسجيل مقفول (اضغط للفتح)'});
 db.collection('students').orderBy('ts').onSnapshot(s=>{stu=s.docs.map(d=>({id:d.id,...d.data()}));draw()});
+db.collection('feedback').onSnapshot(s=>{const a=s.docs.map(d=>d.data()),v=a.length?(a.reduce((x,y)=>x+y.stars,0)/a.length).toFixed(1):'-';$('#fb').innerHTML=`⭐ متوسط التقييم: <b>${v}</b> من ${a.length} تقييم`+a.filter(x=>x.comment).slice(-5).map(x=>`<div style="margin-top:4px">${'★'.repeat(x.stars)} ${esc(x.comment)}</div>`).join('')});
 db.collection('staff').onSnapshot(s=>{$('#cl').innerHTML=s.docs.map(d=>`<span class="tag">${esc(d.id)} <a href="#" onclick="db.doc('staff/${d.id}').delete();return false">✕</a></span> `).join('')})}
 function tab(n){$('#t1').classList.toggle('hide',n!=1);$('#t2').classList.toggle('hide',n!=2);$('#b1').className=n==1?'':'g';$('#b2').className=(n==2?'':'g')+(isA?'':' hide')}
 function scan(){$('#ce').textContent='';try{sc&&sc.isScanning&&sc.stop()}catch(e){}
@@ -48,7 +50,10 @@ async function go(raw){if(busy)return;busy=1;setTimeout(()=>busy=0,2500);const i
 try{const ref=db.doc('students/'+id),s=await ref.get();if(!s.exists)return show('r','كود غير صحيح');const d=s.data();
 if(d.checkedIn)return show('y','دخل قبل كده '+(d.at?d.at.toDate().toLocaleTimeString('ar-EG'):''),d);
 await ref.update({checkedIn:true,at:TS(),by});show('g','تم تأكيد الدخول ✓',d)}catch(e){show('r','خطأ اتصال أو كود غير صالح')}}
-function draw(){const q=$('#q').value.trim().toLowerCase(),a=stu.filter(s=>s.checkedIn).length;$('#s1').textContent=stu.length;$('#s2').textContent=a;$('#s3').textContent=stu.length-a;
+function an(){const y={},st={};stu.forEach(s=>{const k=s.year||'-';y[k]=y[k]||[0,0];y[k][0]++;if(s.checkedIn){y[k][1]++;st[s.by]=(st[s.by]||0)+1}});const mx=Math.max(1,...Object.values(y).map(v=>v[0]));
+$('#an').innerHTML=Object.entries(y).map(([k,v])=>`<div style="margin:8px 0;font-size:13px">فرقة ${esc(k)}: حضر ${v[1]} من ${v[0]}<div class="meter"><u style="width:${v[0]/mx*100}%"><i style="width:${v[1]/v[0]*100}%"></i></u></div></div>`).join('')+'<small>الحضور حسب المساعد: '+(Object.entries(st).map(([k,v])=>esc(k)+' ('+v+')').join('، ')||'-')+'</small>'}
+const setNt=()=>db.doc('config/main').update({notice:$('#nt').value.trim()});
+function draw(){an();const q=$('#q').value.trim().toLowerCase(),a=stu.filter(s=>s.checkedIn).length;$('#s1').textContent=stu.length;$('#s2').textContent=a;$('#s3').textContent=stu.length-a;
 $('#tb').innerHTML=stu.filter(s=>!q||(s.name+s.nameEn+s.id+s.univ).toLowerCase().includes(q)).map(s=>`<tr><td><img src="${s.photo}"></td><td>${esc(s.name)}</td><td dir="ltr">${esc(s.nameEn)}</td><td>${s.id}</td><td>${esc(s.year)}</td><td>${s.checkedIn?'✓ حضر':'—'}</td><td><button class="g" onclick="tg('${s.id}',${!s.checkedIn})">${s.checkedIn?'إلغاء':'تأكيد'}</button></td></tr>`).join('')}
 const tg=(id,v)=>db.doc('students/'+id).update({checkedIn:v,at:v?TS():null,by:v?'admin':null});
 const setLim=()=>db.doc('config/main').update({limit:+$('#lim').value});
