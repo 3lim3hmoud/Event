@@ -6,31 +6,34 @@ service cloud.firestore {
    allow get: if true;
    allow write: if admin();
    allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count'])
-     && ((request.resource.data.count==resource.data.count+1 && request.resource.data.count<=resource.data.limit)
-      || (request.resource.data.count==resource.data.count-1 && request.resource.data.count>=0));
+     && request.resource.data.count==resource.data.count+1
+     && (resource.data.limit==0 || request.resource.data.count<=resource.data.limit);
   }
   match /students/{id} {
    allow get: if true;
-   allow list: if admin();
-   allow delete: if admin() || resource.data.checkedIn==false;
-   allow create: if get(/databases/$(db)/documents/config/main).data.open==true && request.resource.data.checkedIn==false;
-   allow update: if admin()
-    || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checkedIn','at','by'])
-        && exists(/databases/$(db)/documents/staff/$(request.resource.data.by)))
-    || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','nameEn','photo','phone']);
+   allow list, delete: if admin();
+   allow create: if get(/databases/$(db)/documents/config/main).data.state=='live' && request.resource.data.checkedIn==true;
+   allow update: if admin() || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','nameEn','photo','phone','email']);
   }
-  match /staff/{c} { allow get: if true; allow write, list: if admin(); }
+  match /organizers/{id} {
+   allow get: if true;
+   allow list, update, delete: if admin();
+   allow create: if request.resource.data.code==get(/databases/$(db)/documents/secret/team).data.code;
+  }
+  match /secret/{d} { allow read, write: if admin(); }
+  match /questions/{q} {
+   allow read: if true;
+   allow create: if request.resource.data.keys().hasOnly(['text','name','sid','anon','votes','answer','hidden','ts'])
+     && request.resource.data.text.size()<=300 && request.resource.data.votes==0
+     && get(/databases/$(db)/documents/students/$(request.resource.data.sid)).data.checkedIn==true;
+   allow update: if admin() || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes'])
+     && request.resource.data.votes==resource.data.votes+1);
+   allow delete: if admin();
+  }
   match /feedback/{id} {
    allow create: if request.resource.data.keys().hasOnly(['stars','content','org','rec','comment','ts']) && request.resource.data.stars in [1,2,3,4,5];
    allow get, list, delete: if admin();
   }
-  match /waitlist/{u} {
-   allow create: if request.resource.data.keys().hasOnly(['name','nameEn','univ','year','phone','ts']);
-   allow get, list, delete: if admin();
-  }
-  match /uniq/{u} {
-   allow get, create: if true;
-   allow delete: if admin() || !existsAfter(/databases/$(db)/documents/students/$(resource.data.sid));
-  }
+  match /uniq/{u} { allow get, create: if true; allow delete: if admin(); }
  }
 }
