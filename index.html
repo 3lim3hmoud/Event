@@ -74,32 +74,35 @@ main{counter-reset:s}h2{counter-increment:s}h2:before{content:counter(s,decimal-
 .fp{height:6px;background:var(--bd);border-radius:6px;overflow:hidden;margin-bottom:14px}.fp u{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--p),var(--p2));transition:width .4s}
 .tk{position:relative;transition:transform .15s ease-out;will-change:transform}.tk:before{content:"";position:absolute;inset:0;border-radius:22px;padding:2px;background:linear-gradient(135deg,#0d9488,#38bdf8,#a78bfa,#0d9488);background-size:300%;animation:holo 6s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}@keyframes holo{to{background-position:300% 0}}
 .cut{margin:18px 0!important;border-top:2px dashed var(--bd)}.cut:before,.cut:after{content:"";position:absolute;top:-13px;width:24px;height:24px;border-radius:50%;background:var(--bg)}.cut:before{left:-12px}.cut:after{right:-12px}
+.tabs{display:flex;gap:6px;padding:12px 14px}.tabs button{flex:1;padding:10px;border-radius:12px;border:1px solid var(--bd);background:var(--card);font:700 14px Cairo,sans-serif;color:var(--ink);cursor:pointer}.tabs button.on{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border:0}
+.qi{border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:8px;position:relative;text-align:right}.qi.an{background:#ecfdf5}.qi small{color:var(--mut)}.ans{margin-top:8px;padding:8px 10px;border-radius:10px;background:#d1fae5;color:#065f46;font-size:14px}.vb{position:absolute;left:10px;top:10px;border:1px solid var(--bd);background:var(--card);border-radius:99px;padding:4px 12px;cursor:pointer;font:700 13px Cairo,sans-serif}.vb.on{background:var(--p);color:#fff;border:0}
+.cm .hero,.cm main,.cm .sx,.cm #sb,.cm footer,.cm #hb,.cm #nt{display:none!important}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="config.js"></script></head><body><div id="ld"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg></div><div id="pg"></div>
-<header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><div class="hr"><a class="btn s" id="hb" href="#reg">سجّل الآن</a></div></div></header>
+<header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><div class="hr"><a class="btn s" id="hb" href="#reg">سجّل الآن</a></div></div></header><div class="w" id="cmode"></div>
 <div id="nt" class="nt"></div><section class="hero" id="hero"><div class="w"><span class="bd">🎓 شهادة حضور معتمدة لكل مشارك</span><h1 id="ttl"></h1><p id="sub"></p><div class="ch" id="ch"></div><div class="cd" id="cd"></div>
-<div class="ms"><div class="meter"><u id="bar"></u></div><span id="left">جاري تحميل المقاعد...</span></div><p style="margin-top:20px"><a class="btn g" href="#reg">احجز مقعدك ←</a></p></div>
+<div class="ms"><div class="meter"><u id="bar"></u></div><span id="left">جاري تحميل المقاعد...</span></div><p style="margin-top:20px"><a class="btn g" href="#reg">سجّل حضورك ←</a></p></div>
 <span class="fi" style="top:70px;right:6%">🩺</span><span class="fi" style="top:150px;left:7%;animation-delay:1.5s">💉</span><span class="fi" style="bottom:130px;right:12%;animation-delay:3s">🧬</span><span class="fi" style="top:40px;left:30%;animation-delay:4.5s">❤️</span>
 <svg class="ecg" viewBox="0 0 600 60" preserveAspectRatio="none"><path d="M0 30H120L140 8L165 52L185 30H320L340 8L365 52L385 30H600" fill="none" stroke="#fff" stroke-width="2.5"/></svg><svg class="wv" viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0 40C240 90 480 0 720 40S1200 80 1440 30V80H0Z" style="fill:var(--bg)"/></svg></section>
 <div class="w"><div class="sx" id="sx"></div></div><main class="w">
 <section class="sec rv"><h2>عن المؤتمر</h2><div class="cardx" id="ab"></div></section>
 <section class="sec rv"><h2>هتاخد إيه من المؤتمر</h2><div class="pk" id="pk"></div></section>
-<section class="sec rv"><h2>شهادتك باسمك</h2><div id="cr"></div><p style="color:var(--mut);margin-top:12px">كل من يحضر ويتم تأكيد دخوله بالـQR على الباب هياخد شهادة حضور مطبوعة باسمه بالإنجليزي زي ما كتبه في التسجيل، فراجع اسمك كويس.</p></section>
+<section class="sec rv"><h2>شهادتك باسمك</h2><div id="cr"></div><p style="color:var(--mut);margin-top:12px">كل من يسجّل حضوره داخل المؤتمر هياخد شهادة حضور باسمه بالإنجليزي زي ما كتبه في التسجيل، وهتوصله بعد ما ينتهي المؤتمر. راجع اسمك كويس.</p></section>
 <section class="sec rv"><h2>برنامج اليوم</h2><div class="cardx" id="ag"></div></section>
 <section class="sec rv" id="spw"><h2>المحاضرون</h2><div class="sp" id="sp"></div></section>
-<section class="sec rv"><h2>خطوات الحضور</h2><div class="cardx st"><div><i>📝</i>سجّل بياناتك</div><div><i>📲</i>استلم تذكرة QR</div><div><i>✅</i>أظهرها عند الباب</div></div></section>
+<section class="sec rv"><h2>خطوات الحضور</h2><div class="cardx st"><div><i>📲</i>امسح الـQR</div><div><i>📝</i>سجّل بياناتك</div><div><i>🎓</i>خد شهادتك</div></div></section>
 <section class="sec rv" id="reg"><h2>التسجيل</h2><div id="rg"></div></section>
 <section class="sec rv"><h2>أسئلة شائعة</h2><div id="fq"></div></section></main>
 <div id="sb"><span id="sbt"></span><a class="btn s" href="#reg">سجّل الآن</a></div><footer id="ft"></footer>
 <script>
-firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='conf_card',E=EVENT,D=E.date?new Date(E.date):null;
+firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='conf_card',E=EVENT,D=E.date?new Date(E.date):null,TS=()=>firebase.firestore.FieldValue.serverTimestamp(),qp=new URLSearchParams(location.search);
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
-let me=JSON.parse(localStorage.getItem(LS)||'null'),photo=me?me.photo:'',unsub,C=null,ed=0;
+let me=JSON.parse(localStorage.getItem(LS)||'null'),photo=me?me.photo:'',C=null,ed=0,tab='q',lk='',QS=[],qsub=0,R={s:0,c:0,o:0,r:''};
 document.title=E.title;$('#hn').textContent=E.title.slice(0,22);$('#ttl').textContent=E.title;$('#sub').textContent=E.sub||'';
 if(E.cover)$('#hero').style.setProperty('--cv',`url(${E.cover})`);
 const dt=D?D.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'';
@@ -109,50 +112,67 @@ $('#ag').innerHTML=(E.agenda||[]).map(a=>`<div class="tl"><b>${esc(a.t)}</b><spa
 $('#sp').innerHTML=(E.speakers||[]).map(s=>`<div class="cardx">${s.img?`<img class="av" src="${esc(s.img)}" alt="">`:`<div class="av">${esc(s.name.replace(/^(د\.|أ\.|أ\.د\.)\s*/,'')[0])}</div>`}<b>${esc(s.name)}</b><br><small>${esc(s.role)}</small></div>`).join('');
 if(!(E.speakers||[]).length)$('#spw').remove();
 $('#fq').innerHTML=(E.faq||[]).map(f=>`<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('');
-function tick(){if(!D)return;let d=D-Date.now();if(d<=0){$('#cd').innerHTML='<b>المؤتمر بدأ 🎉</b>';return}const u=[['يوم',864e5],['ساعة',36e5],['دقيقة',6e4],['ثانية',1e3]];
-$('#cd').innerHTML=u.map(([n,m])=>{const v=Math.floor(d/m);d%=m;return`<div><b>${v}</b><small>${n}</small></div>`}).join('')}tick();setInterval(tick,1000);
+function tick(){if(!D)return;let d=D-Date.now();if(d<=0){$('#cd').innerHTML='<b>المؤتمر بدأ 🎉</b>';return}const u=[['يوم',864e5],['ساعة',36e5],['دقيقة',6e4],['ثانية',1e3]];$('#cd').innerHTML=u.map(([n,m])=>{const v=Math.floor(d/m);d%=m;return`<div><b>${v}</b><small>${n}</small></div>`}).join('')}tick();setInterval(tick,1000);
 document.querySelectorAll('.rv').forEach(el=>{const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){el.classList.add('in');o.disconnect()}},{threshold:.1});o.observe(el)});
 const cH=(id,n)=>`<div class="cert"><div class="seal">🏅</div><b style="color:#8a6d00">شهادة حضور</b><br><small>Certificate of Attendance</small><div class="ln"></div><small>تُمنح إلى</small><div class="cn" id="${id}">${esc(n)}</div><small>لحضوره فعاليات ${esc(E.title)}</small></div>`;
-const P=E.perks||[{i:'🎓',t:'شهادة حضور معتمدة',d:'باسمك بالإنجليزي، جاهزة للطباعة والتقديم',hl:1},{i:'🧑‍🏫',t:'محاضرات علمية',d:'من أساتذة ومتخصصين'},{i:'🛠️',t:'ورش عملية',d:'تدريب تطبيقي مباشر'},{i:'🤝',t:'تعارف وتواصل',d:'مع زملائك وأصحاب الخبرة'},{i:'💬',t:'نقاش وأسئلة',d:'فرصة تسأل المحاضرين'}];
+const P=E.perks||[{i:'🎓',t:'شهادة حضور معتمدة',d:'باسمك بالإنجليزي، تحمّلها بعد المؤتمر',hl:1},{i:'🧑‍🏫',t:'محاضرات علمية',d:'من أساتذة ومتخصصين'},{i:'🛠️',t:'ورش عملية',d:'تدريب تطبيقي مباشر'},{i:'🤝',t:'تعارف وتواصل',d:'مع زملائك وأصحاب الخبرة'},{i:'💬',t:'اسأل المحاضرين',d:'من موبايلك وأنت جوه القاعة'}];
 $('#pk').innerHTML=P.map(p=>`<div class="cardx${p.hl?' hl':''}"><i>${p.i}</i><b>${esc(p.t)}</b><small>${esc(p.d)}</small></div>`).join('');
 $('#cr').innerHTML=cH('cn0','Your Name');
-$('#sx').innerHTML=`<div><b>🎓</b>شهادة حضور</div><div><b>${E.hours||4}+</b>ساعات علمية</div><div><b>🔥</b>مقاعد محدودة</div>`;
-addEventListener('scroll',()=>{const r=$('#reg').getBoundingClientRect();$('#sbt').textContent=me?'🎟 تذكرتك جاهزة':$('#left').textContent;$('#sb').classList.toggle('on',scrollY>500&&(r.top>innerHeight||r.bottom<0))});
+$('#sx').innerHTML=`<div><b>🎓</b>شهادة حضور</div><div><b>${E.hours||4}+</b>ساعات علمية</div><div><b>💬</b>اسأل المحاضرين</div>`;
+addEventListener('scroll',()=>{const r=$('#reg').getBoundingClientRect();$('#sbt').textContent=me?'✅ تم تسجيل حضورك':$('#left').textContent;$('#sb').classList.toggle('on',scrollY>500&&(r.top>innerHeight||r.bottom<0));$('#pg').style.width=scrollY/Math.max(1,document.body.scrollHeight-innerHeight)*100+'%'});
+addEventListener('load',()=>setTimeout(()=>$('#ld').classList.add('off'),450));setTimeout(()=>$('#ld').classList.add('off'),2500);
 const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>AL[b%31]).join('');
 function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
-db.doc('config/main').onSnapshot(s=>{C=s.data();$('#nt').style.display=C&&C.notice?'block':'none';$('#nt').textContent=C&&C.notice?'📢 '+C.notice:'';if(C){const l=Math.max(0,C.limit-C.count);$('#bar').style.width=Math.min(100,C.count/C.limit*100)+'%';$('#left').textContent=!C.open||l==0?'التسجيل مقفول':`🔥 متبقي ${l} مقعد من ${C.limit}`}view()},()=>view());
-function view(){if(ed)return;if(me)return card();if(C&&(!C.open||C.count>=C.limit))return wl();form()}
+const msg=(i,t,p)=>`<div class="cardx" style="text-align:center"><div style="font-size:48px">${i}</div><h3>${t}</h3><p style="color:var(--mut)">${p}</p></div>`;
+db.doc('config/main').onSnapshot(s=>{C=s.data()||{};$('#nt').style.display=C.notice?'block':'none';$('#nt').textContent=C.notice?'📢 '+C.notice:'';const st=C.state||'before',n=C.count||0;
+$('#bar').style.width=C.limit?Math.min(100,n/C.limit*100)+'%':(st=='live'?'100%':'0%');
+$('#left').textContent=st=='live'?`🟢 المؤتمر جارٍ الآن • ${n} حاضر`:st=='ended'?'🏁 انتهى المؤتمر • شكراً لحضوركم':'⏳ المؤتمر لسه ما بدأش';
+$('#hb').textContent=me?'حضوري':'سجّل حضورك';if(qp.get('cert'))certMode();else view()},()=>qp.get('cert')?certMode():view());
+function view(){if(ed)return;const st=(C&&C.state)||'before',full=C&&C.limit&&C.count>=C.limit,k=me?'m'+(C&&C.certs):st+full;if(k==lk&&$('#rg').innerHTML)return;lk=k;
+if(me)return card();
+if(st=='before')return $('#rg').innerHTML=msg('⏳','المؤتمر لسه ما بدأش','التسجيل بيتفتح أول ما المنظم يعلن بداية المؤتمر. افتح اللينك تاني وقتها.');
+if(st=='ended')return $('#rg').innerHTML=msg('🏁','المؤتمر انتهى','التسجيل مقفول. لو كنت سجّلت حضورك افتح اللينك من نفس الموبايل لتحصل على شهادتك.');
+if(full)return $('#rg').innerHTML=msg('😔','اكتمل العدد','وصلنا للحد الأقصى للحضور.');
+form()}
 function form(){setTimeout(fp,50);const m=me||{};$('#rg').innerHTML=`<div class="cardx" oninput="fp()" onchange="fp()"><div class="fp"><u id="fpb"></u></div><label class="up" style="margin-bottom:6px"><input type="file" id="f" accept="image/*" hidden>${photo?`<img id="pv" src="${photo}" alt="">`:'<span id="pv">📷<br>صورتك</span>'}</label>
 <label>الاسم بالعربي</label><input id="n" value="${esc(m.name)}" autocomplete="name"><label>الاسم بالإنجليزي (زي ما هيتكتب في الشهادة)</label><input id="e" dir="ltr" value="${esc(m.nameEn)}" oninput="$('#cn2').textContent=this.value||'Your Name'">${cH('cn2',m.nameEn||'Your Name').replace('class="cert"','class="cert mini"')}
 ${m.id?'':`<label>الكود الجامعي</label><input id="u" inputmode="numeric"><label>الفرقة</label><select id="y"><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select>`}
-<label>رقم الموبايل</label><input id="p" type="tel" value="${esc(m.phone)}"><div class="er" id="er"></div><button class="btn" style="width:100%;margin-top:16px" onclick="save()">${m.id?'حفظ التعديل':'تأكيد التسجيل'}</button>${m.id?'<button class="btn g" style="width:100%;margin-top:8px" onclick="ed=0;card()">رجوع</button>':''}</div>`;
-$('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);const p=$('#pv');p.outerHTML=`<img id="pv" src="${photo}" alt="">`;fp()}}}
+<label>رقم الموبايل</label><input id="p" type="tel" value="${esc(m.phone)}"><label>الإيميل (الشهادة هتوصلك عليه)</label><input id="em" type="email" dir="ltr" value="${esc(m.email)}"><div class="er" id="er"></div>
+<button class="btn" style="width:100%;margin-top:16px" onclick="save()">${m.id?'حفظ التعديل':'تسجيل حضوري ✅'}</button>${m.id?'<button class="btn g" style="width:100%;margin-top:8px" onclick="ed=0;lk=\'\';view()">رجوع</button>':''}</div>`;
+$('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);$('#pv').outerHTML=`<img id="pv" src="${photo}" alt="">`;fp()}}}
+function fp(){const ids=['n','e','p','em'].concat($('#u')?['u']:[]),f=ids.filter(i=>$('#'+i)&&$('#'+i).value.trim()).length+(photo?1:0),el=$('#fpb');if(el)el.style.width=f/(ids.length+1)*100+'%'}
 const err=t=>$('#er').textContent=t;
-async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.trim(),phone:$('#p').value.trim(),photo};
-if(!d.name||!/[A-Za-z]/.test(d.nameEn)||!photo)return err('كمّل الاسم بالعربي والإنجليزي وارفع صورتك');
+async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.trim(),phone:$('#p').value.trim(),email:$('#em').value.trim(),photo};
+if(!d.name||!/[A-Za-z]/.test(d.nameEn)||!photo)return err('كمّل الاسم بالعربي والإنجليزي وارفع صورتك');if(!/^\S+@\S+\.\S+$/.test(d.email))return err('اكتب إيميل صحيح');
 try{if(me){await db.doc('students/'+me.id).update(d);me={...me,...d}}
 else{d.univ=$('#u').value.trim().replace(/\//g,'');d.year=$('#y').value;if(!d.univ||!d.phone)return err('اكتب الكود الجامعي والموبايل');
 const id=gen(),cf=db.doc('config/main'),uq=db.doc('uniq/'+d.univ);
-await db.runTransaction(async t=>{const c=await t.get(cf),u=await t.get(uq);
-if(!c.exists||!c.data().open||c.data().count>=c.data().limit)throw'FULL';if(u.exists)throw'DUP';
-t.set(uq,{sid:id});t.set(db.doc('students/'+id),{...d,checkedIn:false,at:null,by:null,ts:firebase.firestore.FieldValue.serverTimestamp()});t.update(cf,{count:c.data().count+1})});
-me={id,...d};setTimeout(confetti,500)}
-localStorage.setItem(LS,JSON.stringify(me));ed=0;card();$('#reg').scrollIntoView()}catch(x){err(x=='FULL'?'التسجيل اتقفل، العدد اكتمل':x=='DUP'?'الكود الجامعي ده مسجل قبل كده':'حصل خطأ، اتأكد من النت وحاول تاني')}}
-function card(){const q=qrcode(0,'M');q.addData(me.id);q.make();$('#hb').textContent='تذكرتي';
-$('#rg').innerHTML=`<div class="cardx tk"><div class="top"><div>✓ تم تسجيلك بنجاح</div><b>${esc(E.title)}</b></div><img class="ph" src="${me.photo}" alt=""><h3 style="margin:8px 0 0">${esc(me.name)}</h3><div dir="ltr" style="color:var(--mut)">${esc(me.nameEn)}</div>
-<small style="color:var(--mut)">${esc([dt,E.time,E.place].filter(Boolean).join(' • '))}</small><div class="sta" style="background:#eff6ff;color:#0369a1">🎓 شهادتك هتتكتب باسم: <span dir="ltr">${esc(me.nameEn)}</span></div><div class="cut"></div><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div>
-<div id="sa" class="sta">بانتظار تأكيد حضورك عند الباب</div><div id="cz" style="padding:0 16px"></div><div class="row"><button class="btn g" onclick="png()">حفظ التذكرة</button><button class="btn g" onclick="ics()">أضف للتقويم</button><button class="btn g" onclick="ed=1;form()">تعديل</button></div>
-<small style="color:var(--mut);display:block;padding:0 16px 16px">التذكرة محفوظة على جهازك وتفتح بدون إنترنت</small><button class="lk" onclick="cancelReg()">إلغاء الحجز</button></div>`;
-if(localStorage.conf_att==me.id){$('#sa').textContent='✓ تم تأكيد حضورك، شكراً لحضورك';$('#sa').className='sta go';document.querySelectorAll('.lk').forEach(e=>e.remove());cz()}
-unsub&&unsub();unsub=db.doc('students/'+me.id).onSnapshot(s=>{if(s.exists&&s.data().checkedIn){$('#sa').textContent='✓ تم تأكيد حضورك، شكراً لحضورك';$('#sa').className='sta go';document.querySelectorAll('.lk').forEach(e=>e.remove());cz()}},()=>{})}
-
-let R={s:0,c:0,o:0,r:''};const SQ=[['s','التقييم العام'],['c','المحتوى العلمي'],['o','التنظيم']];
-function cz(){const el=$('#cz');if(!el)return;localStorage.conf_att=me.id;if(localStorage.conf_fb==me.id)return czBtn();
-el.innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#fffbea"><b>🎓 قيّم المؤتمر (دقيقة واحدة)</b>${SQ.map(([k,l])=>`<div style="margin-top:8px">${l}<div style="font-size:30px;direction:ltr">${[1,2,3,4,5].map(i=>`<span class="sr" data-k="${k}" onclick="rt('${k}',${i})">☆</span>`).join('')}</div></div>`).join('')}<div style="margin-top:8px">هتنصح زمايلك بحضور مؤتمر زي ده؟</div><div class="row" style="padding:6px 0"><button class="btn g" onclick="rc('نعم',this)">نعم 👍</button><button class="btn g" onclick="rc('ممكن',this)">ممكن</button><button class="btn g" onclick="rc('لا',this)">لا</button></div><input id="cm" placeholder="رأيك أو اقتراحك (اختياري)"><button class="btn" style="width:100%;margin-top:10px" onclick="sf()">إرسال</button></div>`}
+await db.runTransaction(async t=>{const c=await t.get(cf),u=await t.get(uq),x=c.data()||{};
+if(x.state!='live')throw'NOTLIVE';if(x.limit&&x.count>=x.limit)throw'FULL';if(u.exists)throw'DUP';
+t.set(uq,{sid:id});t.set(db.doc('students/'+id),{...d,checkedIn:true,at:TS(),by:'self',ts:TS()});t.update(cf,{count:(x.count||0)+1})});
+me={id,...d};setTimeout(confetti,400)}
+localStorage.setItem(LS,JSON.stringify(me));ed=0;lk='m'+(C&&C.certs);card();$('#reg').scrollIntoView()}catch(x){err(x=='NOTLIVE'?'المؤتمر مش شغال دلوقتي':x=='FULL'?'اكتمل العدد':x=='DUP'?'الكود الجامعي ده مسجل قبل كده':'حصل خطأ، اتأكد من النت وحاول تاني')}}
+function card(){$('#hb').textContent='حضوري';
+$('#rg').innerHTML=`<div class="cardx tk"><div class="top"><div>✅ تم تسجيل حضورك</div><b>${esc(E.title)}</b></div><img class="ph" src="${me.photo}" alt=""><h3 style="margin:8px 0 0">${esc(me.name)}</h3><div dir="ltr" style="color:var(--mut)">${esc(me.nameEn)}</div><small style="color:var(--mut)">${esc(me.email||'')}</small>
+<div class="tabs"><button id="t1" onclick="tb('q')">💬 الأسئلة</button><button id="t2" onclick="tb('c')">🎓 شهادتي</button></div><div id="tc" style="padding:0 14px 14px;text-align:right"></div><button class="lk" style="color:var(--p)" onclick="ed=1;form()">تعديل بياناتي</button></div>`;
+if(!qsub){qsub=1;db.collection('questions').orderBy('ts','desc').limit(100).onSnapshot(s=>{QS=s.docs.map(d=>({id:d.id,...d.data()})).filter(q=>!q.hidden).sort((a,b)=>(b.votes||0)-(a.votes||0));rq()},()=>{})}tb(tab)}
+function tb(k){tab=k;$('#t1').className=k=='q'?'on':'';$('#t2').className=k=='c'?'on':'';k=='q'?qUI():cUI()}
+function qUI(){$('#tc').innerHTML=`<textarea id="qt" maxlength="300" rows="3" placeholder="اكتب سؤالك للمحاضرين..." style="width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--bd);background:var(--inp);color:var(--ink);font:15px Cairo,sans-serif"></textarea><label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input id="qa" type="checkbox" style="width:auto"> أرسل كمجهول</label><button class="btn" style="width:100%;margin:0" onclick="sq()">إرسال السؤال</button><div id="ql" style="margin-top:14px"></div>`;rq()}
+function rq(){const el=$('#ql');if(!el)return;const v=JSON.parse(localStorage.qv||'[]');el.innerHTML=QS.length?QS.map(q=>`<div class="qi${q.answer?' an':''}"><div style="padding-left:56px">${esc(q.text)}</div><small>${q.anon?'مجهول':esc(q.name)}</small>${q.answer?`<div class="ans">💡 ${esc(q.answer)}</div>`:''}<button class="vb${v.includes(q.id)?' on':''}" onclick="vt('${q.id}')">👍 ${q.votes||0}</button></div>`).join(''):'<p style="text-align:center;color:var(--mut)">لسه مفيش أسئلة، كن أول واحد 👆</p>'}
+async function sq(){const t=$('#qt').value.trim();if(!t)return;if(Date.now()-(+localStorage.ql||0)<15000)return alert('استنى شوية قبل السؤال اللي بعده');
+try{await db.collection('questions').add({text:t,name:me.name.split(' ')[0],sid:me.id,anon:$('#qa').checked,votes:0,answer:'',hidden:false,ts:TS()});localStorage.ql=Date.now();$('#qt').value=''}catch(e){alert('مقدرتش أبعت السؤال، اتأكد من النت')}}
+async function vt(id){const v=JSON.parse(localStorage.qv||'[]');if(v.includes(id))return;v.push(id);localStorage.qv=JSON.stringify(v);try{await db.doc('questions/'+id).update({votes:firebase.firestore.FieldValue.increment(1)})}catch(e){}rq()}
+function cUI(){const el=$('#tc');if(!C||!C.certs)return el.innerHTML='<div class="cardx" style="text-align:center;background:var(--inp)">🔒<br><b>الشهادات لسه ما اتفتحتش</b><p style="color:var(--mut)">هتتفتح بعد انتهاء المؤتمر، وهيوصلك لينك شهادتك على الواتس أو الإيميل، وتقدر كمان تفتح الصفحة دي تاني.</p><small dir="ltr">'+esc(me.nameEn)+'</small></div>';el.innerHTML='<div id="cz"></div>';cz()}
+function cz(){const el=$('#cz');if(!el)return;if(localStorage.conf_fb==me.id)return czBtn();
+el.innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#fffbea"><b>🎓 قيّم المؤتمر قبل شهادتك (دقيقة)</b>${[['s','التقييم العام'],['c','المحتوى العلمي'],['o','التنظيم']].map(([k,l])=>`<div style="margin-top:8px">${l}<div style="font-size:30px;direction:ltr">${[1,2,3,4,5].map(i=>`<span class="sr" data-k="${k}" onclick="rt('${k}',${i})">☆</span>`).join('')}</div></div>`).join('')}<div style="margin-top:8px">هتنصح زمايلك بمؤتمر زي ده؟</div><div class="row" style="padding:6px 0"><button class="btn g" onclick="rc('نعم',this)">نعم 👍</button><button class="btn g" onclick="rc('ممكن',this)">ممكن</button><button class="btn g" onclick="rc('لا',this)">لا</button></div><input id="cm" placeholder="رأيك أو اقتراحك (اختياري)"><button class="btn" style="width:100%;margin-top:10px" onclick="sf()">إرسال</button></div>`}
 function rt(k,n){R[k]=n;document.querySelectorAll('.sr[data-k="'+k+'"]').forEach((e,i)=>e.textContent=i<n?'★':'☆')}
 function rc(v,b){R.r=v;b.parentNode.querySelectorAll('button').forEach(x=>x.className='btn g');b.className='btn'}
-async function sf(){if(!R.s)return alert('قيّم التقييم العام على الأقل');try{await db.doc('feedback/'+me.id).set({stars:R.s,content:R.c||0,org:R.o||0,rec:R.r||'',comment:$('#cm').value.trim(),ts:firebase.firestore.FieldValue.serverTimestamp()})}catch(e){}localStorage.conf_fb=me.id;czBtn()}
-function czBtn(){$('#cz').innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#ecfdf5"><b>🎓 شهادتك جاهزة، شكراً لتقييمك</b><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`}
+async function sf(){if(!R.s)return alert('قيّم التقييم العام على الأقل');try{await db.doc('feedback/'+me.id).set({stars:R.s,content:R.c||0,org:R.o||0,rec:R.r||'',comment:$('#cm').value.trim(),ts:TS()})}catch(e){}localStorage.conf_fb=me.id;czBtn()}
+function czBtn(){$('#cz').innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#ecfdf5;text-align:center"><b>🎓 شهادتك جاهزة 🎉</b><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`}
+async function certMode(){document.body.classList.add('cm');const el=$('#cmode'),id=(qp.get('cert')||'').toUpperCase().replace(/\//g,'');
+if(!C||!C.certs)return el.innerHTML=msg('🔒','الشهادات لسه ما اتفتحتش','هتتاح بعد انتهاء المؤتمر، جرّب تفتح اللينك تاني بعدين.');
+try{const s=await db.doc('students/'+id).get();if(!s.exists)return el.innerHTML=msg('❌','اللينك غير صحيح','اتأكد من اللينك اللي وصلك.');me={id,...s.data()};
+el.innerHTML=`<div class="cardx" style="text-align:center;margin-top:16px"><div style="font-size:46px">🎓</div><h2 style="margin:6px 0">${esc(me.name)}</h2><div dir="ltr" style="color:var(--mut)">${esc(me.nameEn)}</div><p style="color:var(--mut)">شهادة حضور ${esc(E.title)}</p><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`}catch(e){el.innerHTML=msg('⚠️','مشكلة اتصال','حاول تاني.')}}
 async function cert(t){await document.fonts.load('100px "Great Vibes"');const c=document.createElement('canvas');c.width=1754;c.height=1240;const x=c.getContext('2d'),m=877;x.textAlign='center';
 x.fillStyle='#fffdf7';x.fillRect(0,0,1754,1240);x.strokeStyle='#c9a227';x.lineWidth=14;x.strokeRect(40,40,1674,1160);x.lineWidth=3;x.strokeRect(72,72,1610,1096);
 const g=x.createLinearGradient(0,0,1754,0);g.addColorStop(0,'#0d9488');g.addColorStop(1,'#0ea5e9');x.fillStyle=g;x.fillRect(72,72,1610,16);
@@ -168,25 +188,5 @@ x.strokeStyle='#0b3b3c';x.lineWidth=2;x.beginPath();x.moveTo(250,1085);x.lineTo(
 x.fillStyle='#5b7f80';x.font='26px Georgia,serif';x.fillText(E.organizerEn||E.organizer||'Organizing Committee',425,1125);x.fillText('Organizing Committee',1329,1125);x.font='20px monospace';x.fillText('ID: '+me.id,m,1150);
 if(t=='png'){const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='certificate-'+me.id+'.png';a.click()}
 else{const p=new window.jspdf.jsPDF({orientation:'l',unit:'mm',format:'a4'});p.addImage(c.toDataURL('image/jpeg',.92),'JPEG',0,0,297,210);p.save('certificate-'+me.id+'.pdf')}}
-
-function wl(){if(localStorage.conf_wl)return $('#rg').innerHTML='<div class="cardx" style="text-align:center"><div style="font-size:48px">⏳</div><h3>إنت في قايمة الانتظار</h3><p style="color:var(--mut)">هنتواصل معاك على الموبايل لو فضي مقعد.</p></div>';
-$('#rg').innerHTML=`<div class="cardx"><h3 style="margin:0">المقاعد اكتملت 😔</h3><p style="color:var(--mut)">سجّل في قايمة الانتظار وهنبلغك لو فضي مقعد.</p><label>الاسم بالعربي</label><input id="wn"><label>الاسم بالإنجليزي</label><input id="we" dir="ltr"><label>الكود الجامعي</label><input id="wu" inputmode="numeric"><label>الفرقة</label><select id="wy"><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select><label>رقم الموبايل (واتساب)</label><input id="wp" type="tel"><div class="er" id="er"></div><button class="btn" style="width:100%;margin-top:14px" onclick="joinWl()">انضم لقايمة الانتظار</button></div>`}
-async function joinWl(){const d={name:$('#wn').value.trim(),nameEn:$('#we').value.trim(),univ:$('#wu').value.trim().replace(/\//g,''),year:$('#wy').value,phone:$('#wp').value.trim()};if(!d.name||!d.univ||!d.phone)return err('كمّل الاسم والكود والموبايل');
-try{await db.doc('waitlist/'+d.univ).set({...d,ts:firebase.firestore.FieldValue.serverTimestamp()});localStorage.conf_wl=1;wl();confetti()}catch(e){err('إنت مسجل في الانتظار قبل كده أو حصل خطأ')}}
-async function cancelReg(){if(!confirm('تأكيد إلغاء حجزك؟ هيتلغي مقعدك وتذكرتك.'))return;try{const cf=db.doc('config/main');await db.runTransaction(async t=>{const c=await t.get(cf);t.delete(db.doc('students/'+me.id));t.delete(db.doc('uniq/'+me.univ));if(c.exists&&c.data().count>0)t.update(cf,{count:c.data().count-1})});
-['conf_card','conf_att','conf_fb'].forEach(k=>localStorage.removeItem(k));unsub&&unsub();me=null;photo='';$('#hb').textContent='سجّل الآن';view()}catch(e){alert('مقدرتش ألغي الحجز، حاول تاني أو كلّم المنظمين')}}
 function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;z-index:98;pointer-events:none';c.width=innerWidth;c.height=innerHeight;document.body.appendChild(c);const x=c.getContext('2d'),P=Array.from({length:150},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,r:4+Math.random()*6,vx:Math.random()*4-2,vy:2+Math.random()*4,c:['#0d9488','#38bdf8','#fde047','#fb7185','#34d399'][Math.floor(Math.random()*5)]}));let f=0;(function a(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.r,p.r*1.6)});if(++f<180)requestAnimationFrame(a);else c.remove()})()}
-addEventListener('load',()=>setTimeout(()=>$('#ld').classList.add('off'),450));setTimeout(()=>$('#ld').classList.add('off'),2500);
-addEventListener('scroll',()=>{$('#pg').style.width=scrollY/Math.max(1,document.body.scrollHeight-innerHeight)*100+'%'});
-
-function fp(){const ids=['n','e','p'].concat($('#u')?['u']:[]),f=ids.filter(i=>$('#'+i)&&$('#'+i).value.trim()).length+(photo?1:0),el=$('#fpb');if(el)el.style.width=f/(ids.length+1)*100+'%'}
-document.addEventListener('pointermove',e=>{const k=e.target.closest&&e.target.closest('.tk');document.querySelectorAll('.tk').forEach(t=>{if(t!==k)t.style.transform=''});if(!k||e.pointerType=='touch')return;const r=k.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;k.style.transform=`perspective(900px) rotateY(${x*8}deg) rotateX(${-y*8}deg)`});
-function ics(){if(!D)return;const f=d=>d.toISOString().replace(/[-:]|\.\d+/g,''),e=new Date(+D+(E.hours||4)*36e5),t=`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${f(D)}\nDTEND:${f(e)}\nSUMMARY:${E.title}\nLOCATION:${E.place||''}\nEND:VEVENT\nEND:VCALENDAR`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/calendar'}));a.download='event.ics';a.click()}
-function png(){const q=qrcode(0,'M');q.addData(me.id);q.make();const L=s=>new Promise(r=>{const i=new Image;i.onload=()=>r(i);i.src=s});
-Promise.all([L(me.photo),L(q.createDataURL(8))]).then(([p,Q])=>{const c=document.createElement('canvas');c.width=600;c.height=880;const x=c.getContext('2d');x.direction='rtl';x.textAlign='center';x.fillStyle='#fff';x.fillRect(0,0,600,880);
-const g=x.createLinearGradient(0,0,600,0);g.addColorStop(0,'#0d9488');g.addColorStop(1,'#38bdf8');x.fillStyle=g;x.fillRect(0,0,600,150);x.fillStyle='#fff';x.font='bold 32px Cairo,sans-serif';x.fillText(E.title,300,90);
-x.save();x.beginPath();x.arc(300,190,60,0,7);x.clip();x.drawImage(p,240,130,120,120);x.restore();x.lineWidth=5;x.strokeStyle='#fff';x.beginPath();x.arc(300,190,60,0,7);x.stroke();
-x.fillStyle='#0b3b3c';x.font='bold 34px Cairo,sans-serif';x.fillText(me.name,300,310);x.fillStyle='#5b7f80';x.font='26px sans-serif';x.fillText(me.nameEn,300,350);
-x.drawImage(Q,150,390,300,300);x.fillStyle='#0b3b3c';x.font='bold 40px monospace';x.fillText(me.id,300,745);x.fillStyle='#5b7f80';x.font='22px Cairo,sans-serif';x.fillText([dt,E.place].filter(Boolean).join(' • '),300,810);
-const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='ticket-'+me.id+'.png';a.click()})}
 </script></body></html>
