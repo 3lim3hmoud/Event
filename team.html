@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d9488"><title>تيم الأورجنايزر</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#0d9488;--p2:#38bdf8;--bg:#f0fbfb;--ink:#0b3b3c;--mut:#5b7f80;--bd:#d3ecec}*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(800px 380px at 85% 0,#5eead433,transparent),var(--bg);color:var(--ink);font-family:Cairo,system-ui,Tahoma,sans-serif;padding:16px}.w{max-width:460px;margin:auto}
+h1{text-align:center;font-size:22px;margin:10px 0 4px}.sub{text-align:center;color:var(--mut);margin:0 0 16px}
+.c{background:#fff;border:1px solid var(--bd);border-radius:22px;padding:18px;box-shadow:0 14px 40px #0d94881a}
+label{display:block;font-size:13px;margin:12px 0 4px;color:var(--mut);font-weight:600}
+input,select{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--bd);background:#f8fdfd;font:16px Cairo,sans-serif;color:var(--ink)}input:focus,select:focus{outline:0;border-color:var(--p);box-shadow:0 0 0 4px #0d948822}
+.btn{width:100%;margin-top:16px;border:0;border-radius:14px;padding:13px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font:700 16px Cairo,sans-serif;cursor:pointer}
+.up{display:grid;place-items:center;width:96px;height:96px;margin:0 auto;border-radius:50%;border:2px dashed var(--p);color:var(--p);cursor:pointer;overflow:hidden;font-size:12px;text-align:center}.up img{width:100%;height:100%;object-fit:cover}
+.er{color:#dc2626;font-size:14px;margin-top:10px}
+.tk{border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#0b3b3c,#0d9488);color:#fff;text-align:center;box-shadow:0 20px 50px #0d948844;animation:pop .7s cubic-bezier(.2,1.4,.4,1)}@keyframes pop{from{opacity:0;transform:scale(.85) translateY(30px)}}
+.tk .ob{background:linear-gradient(90deg,#c9a227,#fde68a,#c9a227);color:#3b2f00;font-weight:800;letter-spacing:6px;padding:10px;font-size:18px}
+.tk .ph{width:104px;height:104px;border-radius:50%;object-fit:cover;border:4px solid #fde68a;margin-top:20px}.tk h2{margin:10px 0 0}.tk .rl{display:inline-block;background:#ffffff26;border-radius:99px;padding:4px 14px;margin:8px 0}
+.qr{width:180px;background:#fff;padding:8px;border-radius:14px;margin:12px 0 4px}.code{font:800 22px monospace;letter-spacing:4px;padding-bottom:20px}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="config.js"></script></head><body><div class="w"><h1>🛡️ تيم الأورجنايزر</h1><p class="sub" id="t"></p><div id="app"></div></div>
+<script>
+firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='org_card';$('#t').textContent=EVENT.title;
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let me=JSON.parse(localStorage.getItem(LS)||'null'),photo='';
+const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>'O'+Array.from(crypto.getRandomValues(new Uint8Array(7)),b=>AL[b%31]).join('');
+function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
+function form(){$('#app').innerHTML=`<div class="c"><label class="up"><input type="file" id="f" accept="image/*" hidden><span id="pv">📷<br>صورتك</span></label>
+<label>كود التيم (من الأدمن)</label><input id="cd" dir="ltr" autocapitalize="off"><label>الاسم بالعربي</label><input id="n"><label>الاسم بالإنجليزي</label><input id="e" dir="ltr"><label>رقم الموبايل</label><input id="p" type="tel">
+<label>اللجنة</label><select id="r"><option>لجنة الاستقبال</option><option>اللجنة العلمية</option><option>اللوجستيات والتنظيم</option><option>الإعلام والتصوير</option><option>الدعم الطبي</option><option>العلاقات العامة</option><option>أخرى</option></select>
+<div class="er" id="er"></div><button class="btn" onclick="save()">تسجيل في التيم</button></div>`;
+$('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);$('#pv').outerHTML=`<img id="pv" src="${photo}" alt="">`}}}
+const err=t=>$('#er').textContent=t;
+async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.trim(),phone:$('#p').value.trim(),role:$('#r').value,photo,code:$('#cd').value.trim()};
+if(!d.name||!d.phone||!d.code||!photo)return err('كمّل كل البيانات وارفع صورتك');
+const id=gen();try{await db.doc('organizers/'+id).set({...d,ts:firebase.firestore.FieldValue.serverTimestamp()});delete d.code;me={id,...d};localStorage.setItem(LS,JSON.stringify(me));tkt()}catch(x){err('كود التيم غلط أو حصل خطأ في الاتصال')}}
+function tkt(){const q=qrcode(0,'M');q.addData(me.id);q.make();
+$('#app').innerHTML=`<div class="tk"><div class="ob">ORGANIZER</div><img class="ph" src="${me.photo}" alt=""><h2>${esc(me.name)}</h2><div dir="ltr" style="opacity:.8">${esc(me.nameEn)}</div><div class="rl">🛡️ ${esc(me.role)}</div><div style="opacity:.8;font-size:14px">${esc(EVENT.title)}</div><br><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div></div><p class="sub" style="margin-top:14px">تذكرتك محفوظة على الموبايل. للتعديل كلّم الأدمن.</p>`}
+if(me)tkt();else form();
+</script></body></html>
