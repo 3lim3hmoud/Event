@@ -77,52 +77,43 @@ main{counter-reset:s}h2{counter-increment:s}h2:before{content:counter(s,decimal-
 .tabs{display:flex;gap:6px;padding:12px 14px}.tabs button{flex:1;padding:10px;border-radius:12px;border:1px solid var(--bd);background:var(--card);font:700 14px Cairo,sans-serif;color:var(--ink);cursor:pointer}.tabs button.on{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border:0}
 .qi{border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:8px;position:relative;text-align:right}.qi.an{background:#ecfdf5}.qi small{color:var(--mut)}.ans{margin-top:8px;padding:8px 10px;border-radius:10px;background:#d1fae5;color:#065f46;font-size:14px}.vb{position:absolute;left:10px;top:10px;border:1px solid var(--bd);background:var(--card);border-radius:99px;padding:4px 12px;cursor:pointer;font:700 13px Cairo,sans-serif}.vb.on{background:var(--p);color:#fff;border:0}
 .cm .hero,.cm main,.cm .sx,.cm #sb,.cm footer,.cm #hb,.cm #nt{display:none!important}
+
+.hv{max-width:560px;margin:0 auto}.cv{display:block;width:100%;height:auto;border-radius:0 0 28px 28px;box-shadow:0 18px 40px #1d4ed833}
+.info{margin-top:-34px;position:relative;z-index:2}.ch3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.ch3 div{background:var(--card);border-radius:18px;padding:12px 4px;text-align:center;box-shadow:0 10px 28px #0d948826;animation:up .7s both}.ch3 div:nth-child(2){animation-delay:.1s}.ch3 div:nth-child(3){animation-delay:.2s}
+.ch3 i{font-style:normal;font-size:22px;display:block}.ch3 b{display:block;font-size:14px;margin-top:2px}.ch3 small{color:var(--mut);font-size:12px}
+.ms2{max-width:340px;margin:14px auto 0;font-size:14px;text-align:center}.ms2 .meter{background:var(--bd)}.ms2 .meter u{background:linear-gradient(90deg,var(--p),var(--p2));animation:none}
+.sec{padding:18px 0}.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pvn{margin-top:8px;text-align:center;background:var(--inp);border-radius:12px;padding:4px 8px;direction:rtl}.pvn small{color:var(--mut)}.pvn span{display:block;font:400 28px 'Great Vibes',cursive;color:var(--p);direction:ltr;min-height:36px}
+.ph0{display:grid;place-items:center;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-size:38px;font-weight:800;margin-inline:auto}
+.sp .cardx{padding:14px 10px}.sp small{line-height:1.5;display:block;margin-top:2px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="config.js"></script></head><body><div id="ld"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg></div><div id="pg"></div>
-<header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><div class="hr"><a class="btn s" id="hb" href="#reg">سجّل الآن</a></div></div></header><div class="w" id="cmode"></div>
-<div id="nt" class="nt"></div><section class="hero" id="hero"><div class="w"><span class="bd">🎓 شهادة حضور معتمدة لكل مشارك</span><h1 id="ttl"></h1><p id="sub"></p><div class="ch" id="ch"></div><div class="cd" id="cd"></div>
-<div class="ms"><div class="meter"><u id="bar"></u></div><span id="left">جاري تحميل المقاعد...</span></div><p style="margin-top:20px"><a class="btn g" href="#reg">سجّل حضورك ←</a></p></div>
-<span class="fi" style="top:70px;right:6%">🩺</span><span class="fi" style="top:150px;left:7%;animation-delay:1.5s">💉</span><span class="fi" style="bottom:130px;right:12%;animation-delay:3s">🧬</span><span class="fi" style="top:40px;left:30%;animation-delay:4.5s">❤️</span>
-<svg class="ecg" viewBox="0 0 600 60" preserveAspectRatio="none"><path d="M0 30H120L140 8L165 52L185 30H320L340 8L365 52L385 30H600" fill="none" stroke="#fff" stroke-width="2.5"/></svg><svg class="wv" viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0 40C240 90 480 0 720 40S1200 80 1440 30V80H0Z" style="fill:var(--bg)"/></svg></section>
-<div class="w"><div class="sx" id="sx"></div></div><main class="w">
-<section class="sec rv"><h2>عن المؤتمر</h2><div class="cardx" id="ab"></div></section>
-<section class="sec rv"><h2>هتاخد إيه من المؤتمر</h2><div class="pk" id="pk"></div></section>
-<section class="sec rv"><h2>شهادتك باسمك</h2><div id="cr"></div><p style="color:var(--mut);margin-top:12px">كل من يسجّل حضوره داخل المؤتمر هياخد شهادة حضور باسمه بالإنجليزي زي ما كتبه في التسجيل، وهتوصله بعد ما ينتهي المؤتمر. راجع اسمك كويس.</p></section>
-<section class="sec rv"><h2>برنامج اليوم</h2><div class="cardx" id="ag"></div></section>
-<section class="sec rv" id="spw"><h2>المحاضرون</h2><div class="sp" id="sp"></div></section>
-<section class="sec rv"><h2>خطوات الحضور</h2><div class="cardx st"><div><i>📲</i>امسح الـQR</div><div><i>📝</i>سجّل بياناتك</div><div><i>🎓</i>خد شهادتك</div></div></section>
-<section class="sec rv" id="reg"><h2>التسجيل</h2><div id="rg"></div></section>
-<section class="sec rv"><h2>أسئلة شائعة</h2><div id="fq"></div></section></main>
-<div id="sb"><span id="sbt"></span><a class="btn s" href="#reg">سجّل الآن</a></div><footer id="ft"></footer>
+<script src="config.js"></script></head><body>
+<div id="ld"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg></div><div id="pg"></div><div id="nt" class="nt"></div>
+<header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><div class="hr"><a class="btn s" id="hb" href="#reg">سجّل حضورك</a></div></div></header><div class="w" id="cmode"></div>
+<section class="hv" id="hero"><img id="cv" class="cv" alt="" src="cover.jpg"></section>
+<div class="w info"><div class="ch3" id="ch"></div><div class="ms2"><div class="meter"><u id="bar"></u></div><span id="left"></span></div></div>
+<main class="w">
+<section class="sec rv" id="spw"><h2>ضيوف الندوة</h2><div class="sp" id="sp"></div></section>
+<section class="sec rv" id="reg"><h2>سجّل حضورك</h2><div id="rg"></div></section></main>
+<div id="sb"><span id="sbt"></span><a class="btn s" href="#reg">سجّل</a></div><footer id="ft"></footer>
 <script>
 firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='conf_card',E=EVENT,D=E.date?new Date(E.date):null,TS=()=>firebase.firestore.FieldValue.serverTimestamp(),qp=new URLSearchParams(location.search);
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
 let me=JSON.parse(localStorage.getItem(LS)||'null'),photo=me?me.photo:'',C=null,ed=0,tab='q',lk='',QS=[],qsub=0,R={s:0,c:0,o:0,r:''};
-document.title=E.title;$('#hn').textContent=E.title.slice(0,22);$('#ttl').textContent=E.title;$('#sub').textContent=E.sub||'';
-if(E.cover)$('#hero').style.setProperty('--cv',`url(${E.cover})`);
-const dt=D?D.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'';
-$('#ch').innerHTML=[dt&&'📅 '+dt,E.time&&'🕐 '+E.time,E.place&&'📍 '+E.place].filter(Boolean).map(t=>`<span>${esc(t)}</span>`).join('');
-$('#ab').textContent=E.about||'';$('#ft').textContent='تنظيم: '+(E.organizer||'');
-$('#ag').innerHTML=(E.agenda||[]).map(a=>`<div class="tl"><b>${esc(a.t)}</b><span>${esc(a.title)}</span></div>`).join('');
-$('#sp').innerHTML=(E.speakers||[]).map(s=>`<div class="cardx">${s.img?`<img class="av" src="${esc(s.img)}" alt="">`:`<div class="av">${esc(s.name.replace(/^(د\.|أ\.|أ\.د\.)\s*/,'')[0])}</div>`}<b>${esc(s.name)}</b><br><small>${esc(s.role)}</small></div>`).join('');
-if(!(E.speakers||[]).length)$('#spw').remove();
-$('#fq').innerHTML=(E.faq||[]).map(f=>`<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('');
-function tick(){if(!D)return;let d=D-Date.now();if(d<=0){$('#cd').innerHTML='<b>المؤتمر بدأ 🎉</b>';return}const u=[['يوم',864e5],['ساعة',36e5],['دقيقة',6e4],['ثانية',1e3]];$('#cd').innerHTML=u.map(([n,m])=>{const v=Math.floor(d/m);d%=m;return`<div><b>${v}</b><small>${n}</small></div>`}).join('')}tick();setInterval(tick,1000);
-document.querySelectorAll('.rv').forEach(el=>{const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){el.classList.add('in');o.disconnect()}},{threshold:.1});o.observe(el)});
-const cH=(id,n)=>`<div class="cert"><div class="seal">🏅</div><b style="color:#8a6d00">شهادة حضور</b><br><small>Certificate of Attendance</small><div class="ln"></div><small>تُمنح إلى</small><div class="cn" id="${id}">${esc(n)}</div><small>لحضوره فعاليات ${esc(E.title)}</small></div>`;
-const P=E.perks||[{i:'🎓',t:'شهادة حضور معتمدة',d:'باسمك بالإنجليزي، تحمّلها بعد المؤتمر',hl:1},{i:'🧑‍🏫',t:'محاضرات علمية',d:'من أساتذة ومتخصصين'},{i:'🛠️',t:'ورش عملية',d:'تدريب تطبيقي مباشر'},{i:'🤝',t:'تعارف وتواصل',d:'مع زملائك وأصحاب الخبرة'},{i:'💬',t:'اسأل المحاضرين',d:'من موبايلك وأنت جوه القاعة'}];
-$('#pk').innerHTML=P.map(p=>`<div class="cardx${p.hl?' hl':''}"><i>${p.i}</i><b>${esc(p.t)}</b><small>${esc(p.d)}</small></div>`).join('');
-$('#cr').innerHTML=cH('cn0','Your Name');
-$('#sx').innerHTML=`<div><b>🎓</b>شهادة حضور</div><div><b>${E.hours||4}+</b>ساعات علمية</div><div><b>💬</b>اسأل المحاضرين</div>`;
+document.title=E.title;$('#hn').textContent=E.title.slice(0,24);$('#ft').textContent='تنظيم: '+(E.organizer||'');
+if(E.cover)$('#cv').src=E.cover;
+if(D){const f=(o)=>D.toLocaleDateString('ar-EG-u-nu-latn',o);$('#ch').innerHTML=[['📅',f({weekday:'long'}),f({day:'numeric',month:'long',year:'numeric'})],['🕐','الساعة',E.time],['📍','المكان',E.place]].map(([i,a,b])=>`<div><i>${i}</i><b>${esc(a)}</b><small>${esc(b)}</small></div>`).join('')}
+$('#sp').innerHTML=(E.speakers||[]).map(s=>`<div class="cardx">${s.img?`<img class="av" src="${esc(s.img)}" alt="">`:`<div class="av">${esc(s.name.replace(/^(أ\.د\.|د\.|أ\.)\s*/,'')[0])}</div>`}<b>${esc(s.name)}</b><small>${esc(s.role)}</small></div>`).join('');
+document.querySelectorAll('.rv').forEach(el=>{const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){el.classList.add('in');o.disconnect()}},{threshold:.05});o.observe(el)});
 addEventListener('scroll',()=>{const r=$('#reg').getBoundingClientRect();$('#sbt').textContent=me?'✅ تم تسجيل حضورك':$('#left').textContent;$('#sb').classList.toggle('on',scrollY>500&&(r.top>innerHeight||r.bottom<0));$('#pg').style.width=scrollY/Math.max(1,document.body.scrollHeight-innerHeight)*100+'%'});
 addEventListener('load',()=>setTimeout(()=>$('#ld').classList.add('off'),450));setTimeout(()=>$('#ld').classList.add('off'),2500);
 const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>AL[b%31]).join('');
 function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
+const ini=n=>String(n||'').replace(/^(أ\.د\.|د\.|أ\.)\s*/,'')[0]||'؟',av=(n,p)=>p?`<img class="ph" src="${p}" alt="">`:`<div class="ph ph0">${esc(ini(n))}</div>`;
 const msg=(i,t,p)=>`<div class="cardx" style="text-align:center"><div style="font-size:48px">${i}</div><h3>${t}</h3><p style="color:var(--mut)">${p}</p></div>`;
 db.doc('config/main').onSnapshot(s=>{C=s.data()||{};$('#nt').style.display=C.notice?'block':'none';$('#nt').textContent=C.notice?'📢 '+C.notice:'';const st=C.state||'before',n=C.count||0;
 $('#bar').style.width=C.limit?Math.min(100,n/C.limit*100)+'%':(st=='live'?'100%':'0%');
@@ -134,16 +125,16 @@ if(st=='before')return $('#rg').innerHTML=msg('⏳','المؤتمر لسه ما 
 if(st=='ended')return $('#rg').innerHTML=msg('🏁','المؤتمر انتهى','التسجيل مقفول. لو كنت سجّلت حضورك افتح اللينك من نفس الموبايل لتحصل على شهادتك.');
 if(full)return $('#rg').innerHTML=msg('😔','اكتمل العدد','وصلنا للحد الأقصى للحضور.');
 form()}
-function form(){setTimeout(fp,50);const m=me||{};$('#rg').innerHTML=`<div class="cardx" oninput="fp()" onchange="fp()"><div class="fp"><u id="fpb"></u></div><label class="up" style="margin-bottom:6px"><input type="file" id="f" accept="image/*" hidden>${photo?`<img id="pv" src="${photo}" alt="">`:'<span id="pv">📷<br>صورتك</span>'}</label>
-<label>الاسم بالعربي</label><input id="n" value="${esc(m.name)}" autocomplete="name"><label>الاسم بالإنجليزي (زي ما هيتكتب في الشهادة)</label><input id="e" dir="ltr" value="${esc(m.nameEn)}" oninput="$('#cn2').textContent=this.value||'Your Name'">${cH('cn2',m.nameEn||'Your Name').replace('class="cert"','class="cert mini"')}
-${m.id?'':`<label>الكود الجامعي</label><input id="u" inputmode="numeric"><label>الفرقة</label><select id="y"><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select>`}
+function form(){setTimeout(fp,50);const m=me||{};$('#rg').innerHTML=`<div class="cardx" oninput="fp()" onchange="fp()"><div class="fp"><u id="fpb"></u></div><label class="up" style="margin-bottom:6px"><input type="file" id="f" accept="image/*" hidden>${photo?`<img id="pv" src="${photo}" alt="">`:'<span id="pv">📷<br>صورتك<br><small>(اختياري)</small></span>'}</label>
+<label>الاسم بالعربي</label><input id="n" value="${esc(m.name)}" autocomplete="name"><label>الاسم بالإنجليزي (زي ما هيتكتب في الشهادة)</label><input id="e" dir="ltr" value="${esc(m.nameEn)}" oninput="$('#cn2').textContent=this.value||'Your Name'"><div class="pvn"><small>🎓 هيتكتب في الشهادة كده:</small><span id="cn2">${esc(m.nameEn)||'Your Name'}</span></div>
+${m.id?'':`<div class="g2"><div><label>الكود الجامعي</label><input id="u" inputmode="numeric"></div><div><label>الفرقة</label><select id="y"><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select></div></div>`}
 <label>رقم الموبايل</label><input id="p" type="tel" value="${esc(m.phone)}"><label>الإيميل (الشهادة هتوصلك عليه)</label><input id="em" type="email" dir="ltr" value="${esc(m.email)}"><div class="er" id="er"></div>
-<button class="btn" style="width:100%;margin-top:16px" onclick="save()">${m.id?'حفظ التعديل':'تسجيل حضوري ✅'}</button>${m.id?'<button class="btn g" style="width:100%;margin-top:8px" onclick="ed=0;lk=\'\';view()">رجوع</button>':''}</div>`;
+<button class="btn" style="width:100%;margin-top:14px" onclick="save()">${m.id?'حفظ التعديل':'تسجيل حضوري ✅'}</button>${m.id?'<button class="btn g" style="width:100%;margin-top:8px" onclick="ed=0;lk=\'\';view()">رجوع</button>':''}</div>`;
 $('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);$('#pv').outerHTML=`<img id="pv" src="${photo}" alt="">`;fp()}}}
-function fp(){const ids=['n','e','p','em'].concat($('#u')?['u']:[]),f=ids.filter(i=>$('#'+i)&&$('#'+i).value.trim()).length+(photo?1:0),el=$('#fpb');if(el)el.style.width=f/(ids.length+1)*100+'%'}
+function fp(){const ids=['n','e','p','em'].concat($('#u')?['u']:[]),f=ids.filter(i=>$('#'+i)&&$('#'+i).value.trim()).length,el=$('#fpb');if(el)el.style.width=f/ids.length*100+'%'}
 const err=t=>$('#er').textContent=t;
 async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.trim(),phone:$('#p').value.trim(),email:$('#em').value.trim(),photo};
-if(!d.name||!/[A-Za-z]/.test(d.nameEn)||!photo)return err('كمّل الاسم بالعربي والإنجليزي وارفع صورتك');if(!/^\S+@\S+\.\S+$/.test(d.email))return err('اكتب إيميل صحيح');
+if(!d.name||!/[A-Za-z]/.test(d.nameEn))return err('اكتب الاسم بالعربي والإنجليزي');if(!/^\S+@\S+\.\S+$/.test(d.email))return err('اكتب إيميل صحيح');
 try{if(me){await db.doc('students/'+me.id).update(d);me={...me,...d}}
 else{d.univ=$('#u').value.trim().replace(/\//g,'');d.year=$('#y').value;if(!d.univ||!d.phone)return err('اكتب الكود الجامعي والموبايل');
 const id=gen(),cf=db.doc('config/main'),uq=db.doc('uniq/'+d.univ);
@@ -153,7 +144,7 @@ t.set(uq,{sid:id});t.set(db.doc('students/'+id),{...d,checkedIn:true,at:TS(),by:
 me={id,...d};setTimeout(confetti,400)}
 localStorage.setItem(LS,JSON.stringify(me));ed=0;lk='m'+(C&&C.certs);card();$('#reg').scrollIntoView()}catch(x){err(x=='NOTLIVE'?'المؤتمر مش شغال دلوقتي':x=='FULL'?'اكتمل العدد':x=='DUP'?'الكود الجامعي ده مسجل قبل كده':'حصل خطأ، اتأكد من النت وحاول تاني')}}
 function card(){$('#hb').textContent='حضوري';
-$('#rg').innerHTML=`<div class="cardx tk"><div class="top"><div>✅ تم تسجيل حضورك</div><b>${esc(E.title)}</b></div><img class="ph" src="${me.photo}" alt=""><h3 style="margin:8px 0 0">${esc(me.name)}</h3><div dir="ltr" style="color:var(--mut)">${esc(me.nameEn)}</div><small style="color:var(--mut)">${esc(me.email||'')}</small>
+$('#rg').innerHTML=`<div class="cardx tk"><div class="top"><div>✅ تم تسجيل حضورك</div><b>${esc(E.title)}</b></div>${av(me.name,me.photo)}<h3 style="margin:8px 0 0">${esc(me.name)}</h3><div dir="ltr" style="color:var(--mut)">${esc(me.nameEn)}</div><small style="color:var(--mut)">${esc(me.email||'')}</small>
 <div class="tabs"><button id="t1" onclick="tb('q')">💬 الأسئلة</button><button id="t2" onclick="tb('c')">🎓 شهادتي</button></div><div id="tc" style="padding:0 14px 14px;text-align:right"></div><button class="lk" style="color:var(--p)" onclick="ed=1;form()">تعديل بياناتي</button></div>`;
 if(!qsub){qsub=1;db.collection('questions').orderBy('ts','desc').limit(100).onSnapshot(s=>{QS=s.docs.map(d=>({id:d.id,...d.data()})).filter(q=>!q.hidden).sort((a,b)=>(b.votes||0)-(a.votes||0));rq()},()=>{})}tb(tab)}
 function tb(k){tab=k;$('#t1').className=k=='q'?'on':'';$('#t2').className=k=='c'?'on':'';k=='q'?qUI():cUI()}
