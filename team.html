@@ -21,6 +21,7 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:url(bg.jpg) 
 .c{background:#ffffffa8!important;backdrop-filter:blur(4px)}.c label{color:#0b3b3c}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.kb{background:#f0fdfa;border:1px dashed var(--p);border-radius:14px;padding:2px 12px 12px;margin-top:14px}
 @media(max-width:400px){.g2{grid-template-columns:1fr}}
+.tk{background:linear-gradient(160deg,#0b3b3cb8,#0d9488a8)!important;backdrop-filter:blur(3px)}.tk .ob{user-select:none}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -42,8 +43,9 @@ async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.tr
 if(!d.name||!d.phone||!d.code)return err('كمّل الاسم والموبايل وكود التيم');
 const id=gen();try{await db.doc('organizers/'+id).set({...d,ts:firebase.firestore.FieldValue.serverTimestamp()});delete d.code;me={id,...d};localStorage.setItem(LS,JSON.stringify(me));tkt()}catch(x){err('كود التيم غلط أو حصل خطأ في الاتصال')}}
 function tkt(){const q=qrcode(0,'M');q.addData(me.id);q.make();
-$('#app').innerHTML=`<div class="tk"><div class="ob">ORGANIZER</div>${me.photo?`<img class="ph" src="${me.photo}" alt="">`:`<div class="ph" style="display:grid;place-items:center;margin:20px auto 0;background:#ffffff26;font-size:40px;font-weight:800">${esc((me.name||"؟")[0])}</div>`}<h2>${esc(me.name)}</h2><div dir="ltr" style="opacity:.8">${esc(me.nameEn)}</div><div class="rl">🛡️ ${esc(me.role)}</div><div style="opacity:.8;font-size:14px">${esc(EVENT.title)}</div><br><div class="qb" style="display:none"><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div></div><div class="qh" style="display:none;padding:26px 16px 30px;opacity:.85">🔒 الـ QR مخفي حالياً من الإدارة</div></div><p class="sub" style="margin-top:14px">تذكرتك محفوظة على الموبايل. للتعديل كلّم الأدمن.</p>`;ap()}
+$('#app').innerHTML=`<div class="tk"><div class="ob" onclick="tg()" style="cursor:pointer">ORGANIZER <span id="chv" style="font-size:13px">▲</span></div><div id="tbd">${me.photo?`<img class="ph" src="${me.photo}" alt="">`:`<div class="ph" style="display:grid;place-items:center;margin:20px auto 0;background:#ffffff26;font-size:40px;font-weight:800">${esc((me.name||"؟")[0])}</div>`}<h2>${esc(me.name)}</h2><div dir="ltr" style="opacity:.8">${esc(me.nameEn)}</div><div class="rl">🛡️ ${esc(me.role)}</div><div style="opacity:.8;font-size:14px">${esc(EVENT.title)}</div><br><div class="qb" style="display:none"><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div></div><div class="qh" style="display:none;padding:26px 16px 30px;opacity:.85">🔒 الـ QR مخفي حالياً من الإدارة</div></div></div><p class="sub" style="margin-top:14px">تذكرتك محفوظة على الموبايل. للتعديل كلّم الأدمن.</p>`;ap();if(localStorage.org_open=='0'){$('#tbd').style.display='none';$('#chv').textContent='▼'}}
 if(me)tkt();else form();
+function tg(){const b=$('#tbd'),o=b.style.display=='none';b.style.display=o?'':'none';$('#chv').textContent=o?'▲':'▼';try{localStorage.org_open=o?'1':'0'}catch(e){}}
 function ap(){document.querySelectorAll('.qb').forEach(e=>e.style.display=QR===true?'':'none');document.querySelectorAll('.qh').forEach(e=>e.style.display=QR===false?'block':'none')}
 db.doc('config/main').onSnapshot(s=>{QR=(s.data()||{}).orgQr!==false;ap()},()=>{QR=true;ap()});
 </script></body></html>
