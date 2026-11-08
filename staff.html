@@ -21,6 +21,7 @@ a.wab{display:inline-block;padding:6px 10px;border-radius:10px;border:1px solid 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="config.js"></script></head><body><div class="w">
 <div id="lg" class="c" style="max-width:420px;margin:40px auto"><h2>🛡️ دخول الأدمن</h2><input id="em" type="email" placeholder="الإيميل" dir="ltr"><input id="pw" type="password" placeholder="الباسورد" dir="ltr"><button onclick="login()">دخول</button></div>
 <div id="mn" class="hide">
@@ -38,6 +39,7 @@ a.wab{display:inline-block;padding:6px 10px;border-radius:10px;border:1px solid 
 <label style="display:block;margin-top:10px;font-size:13px">إعلان يظهر للطلاب (فاضي = إخفاء)</label><div class="row"><input id="nt"><button onclick="db.doc('config/main').update({notice:$('#nt').value.trim()})">نشر</button></div>
 <button class="g" onclick="db.doc('config/main').update({count:stu.length})">تصحيح عدّاد الحضور</button><button class="g" onclick="auth.signOut()">تسجيل خروج</button></div></div></div>
 <div id="sc" class="ov hide" style="background:#0b3b3c"><button onclick="scStop()" style="position:absolute;top:12px;left:12px">✕</button><h2>📷 تأكيد حضور الأورجنايزر</h2><video id="scv" playsinline muted style="width:100%;max-width:420px;border-radius:18px;background:#000"></video><canvas id="scc" class="hide"></canvas><div id="scm" class="bq">وجّه الكاميرا على الـ QR</div><div class="row" style="max-width:420px;margin:8px auto"><input id="scman" dir="ltr" placeholder="أو اكتب الكود يدوي"><button onclick="scGo($('#scman').value.trim().toUpperCase())">تأكيد</button></div><div id="scl"></div></div>
+<div id="rgo" class="ov hide"><button onclick="rgo(0)" style="position:absolute;top:12px;left:12px">✕</button><h2 id="rgt" style="margin-top:30px"></h2><div style="background:#fff;display:inline-block;padding:16px;border-radius:24px;margin:10px 0"><img id="rgi" alt="QR" style="width:min(80vw,420px);display:block"></div><div style="font-size:22px;font-weight:800">📱 امسح الكود لتسجيل حضورك</div><button onclick="rgPng()" style="margin-top:16px;background:#fff;color:#0d9488">⬇ تحميل صورة PNG</button></div>
 <div id="bs" class="ov hide"><button onclick="bs(0)" style="position:absolute;top:12px;left:12px">✕</button><h2 id="bt"></h2><div>الحضور المسجّل</div><div id="bn">0</div><div id="bq"></div></div>
 <script>
 firebase.initializeApp(FB);const db=firebase.firestore(),auth=firebase.auth(),$=s=>document.querySelector(s),TS=firebase.firestore.FieldValue.serverTimestamp;
@@ -57,7 +59,7 @@ function tb(n){for(let i=1;i<=5;i++){$('#p'+i).classList.toggle('hide',i!=n);$('
 function drawCs(){const el=$('#cs');if(!el)return;const on=!!cfg.certs;el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;margin-bottom:12px;background:${on?'#ecfdf5':'#fef2f2'}"><div><b>${on?'🟢 الشهادات ظاهرة للطلاب':'🔴 الشهادات مخفية عن الطلاب'}</b><br><small>${on?'الطلاب يقدروا يحملوا شهاداتهم دلوقتي':'الطلاب هيشوفوا إن الشهادات لسه ما اتفتحتش'}</small></div><button class="${on?'r':'o'}" onclick="setCerts(${!on})">${on?'🔒 إخفاء الشهادات':'🎓 إظهار الشهادات'}</button></div>`}
 function drawOq(){const el=$('#oq');if(!el)return;const on=cfg.orgQr!==false;el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;margin-bottom:12px;background:${on?'#ecfdf5':'#fef2f2'}"><div><b>${on?'🟢 الـ QR ظاهر للأورجنايزر':'🔴 الـ QR مخفي عن الأورجنايزر'}</b><br><small>${on?'بيظهر على تذكرة كل أورجنايزر':'التذكرة هتعرض رسالة إنه مخفي'}</small></div><button class="${on?'r':'o'}" onclick="db.doc('config/main').update({orgQr:${!on}})">${on?'🔒 إخفاء الـ QR':'🛡️ إظهار الـ QR'}</button></div>`}
 function drawEv(){drawCs();drawOq();const st=cfg.state||'before',L={before:['⏳ لم يبدأ','#f59e0b'],live:['🟢 جارٍ الآن (التسجيل مفتوح)','#16a34a'],ended:['🏁 انتهى','#64748b']}[st];
-$('#evb').innerHTML=`<span class="badge" style="background:${L[1]}">${L[0]}</span> `+(st=='before'?'<button class="o" onclick="setSt(\'live\')">▶ بدء المؤتمر</button>':st=='live'?'<button class="r" onclick="if(confirm(\'إنهاء المؤتمر؟ هيتقفل التسجيل.\'))setSt(\'ended\')">⏹ إنهاء المؤتمر</button>':'<button class="g" onclick="setSt(\'live\')">↩ إعادة فتح المؤتمر</button>')+(cfg.certs?'<button class="g" onclick="setCerts(false)">🔒 إغلاق الشهادات</button>':'<button onclick="setCerts(true)">🎓 فتح الشهادات للطلاب</button>')+'<button class="g" onclick="bs(1)">📺 شاشة العرض</button>';
+$('#evb').innerHTML=`<span class="badge" style="background:${L[1]}">${L[0]}</span> `+(st=='before'?'<button class="o" onclick="setSt(\'live\')">▶ بدء المؤتمر</button>':st=='live'?'<button class="r" onclick="if(confirm(\'إنهاء المؤتمر؟ هيتقفل التسجيل.\'))setSt(\'ended\')">⏹ إنهاء المؤتمر</button>':'<button class="g" onclick="setSt(\'live\')">↩ إعادة فتح المؤتمر</button>')+(cfg.certs?'<button class="g" onclick="setCerts(false)">🔒 إغلاق الشهادات</button>':'<button onclick="setCerts(true)">🎓 فتح الشهادات للطلاب</button>')+'<button class="g" onclick="bs(1)">📺 شاشة العرض</button><button class="g" onclick="rgo(1)">📱 QR تسجيل الطلاب</button>';
 if(document.activeElement!==$('#lim'))$('#lim').value=cfg.limit||0;if(document.activeElement!==$('#nt'))$('#nt').value=cfg.notice||''}
 const setSt=s=>db.doc('config/main').update({state:s,[s=='live'?'startedAt':'endedAt']:TS()});
 function setCerts(v){if(v&&cfg.state!='ended'&&!confirm('المؤتمر لسه ما انتهاش. تفتح الشهادات دلوقتي؟'))return;db.doc('config/main').update({certs:v})}
@@ -78,6 +80,18 @@ async function scGo(id){if(!id)return;const t=Date.now();if(id==scLast&&t-scT<30
 if(!o){m.textContent='❌ كود غير معروف: '+id;m.style.background='#dc2626';navigator.vibrate&&navigator.vibrate(300);return}
 if(o.checkedIn){m.textContent='⚠️ '+o.name+' اتأكد حضوره قبل كده';m.style.background='#f59e0b';return}
 try{await oc(id,true);m.textContent='✅ تم تأكيد حضور '+o.name;m.style.background='#16a34a';navigator.vibrate&&navigator.vibrate(120);scH.unshift(o.name);$('#scl').innerHTML=scH.slice(0,8).map(n=>`<div class="bq" style="font-size:15px">✅ ${esc(n)}</div>`).join('')}catch(e){m.textContent='حصل خطأ، حاول تاني';m.style.background='#dc2626'}}
+const rgU=()=>new URL('./',location.href).href;
+function rgQ(k){const q=qrcode(0,'M');q.addData(rgU());q.make();return q.createDataURL(k,0)}
+function rgo(on){$('#rgo').classList.toggle('hide',!on);if(on){$('#rgt').textContent=EVENT.title;$('#rgi').src=rgQ(10)}}
+async function rgPng(){await document.fonts.load('800 60px Cairo');const im=new Image();im.src=rgQ(12);await im.decode();
+const c=document.createElement('canvas');c.width=1080;c.height=1350;const x=c.getContext('2d'),m=540;x.direction='rtl';x.textAlign='center';
+const g=x.createLinearGradient(0,0,1080,1350);g.addColorStop(0,'#0f766e');g.addColorStop(.55,'#0d9488');g.addColorStop(1,'#0ea5e9');x.fillStyle=g;x.fillRect(0,0,1080,1350);
+x.fillStyle='#fff';x.font='800 60px Cairo,sans-serif';x.fillText(EVENT.title,m,150);x.font='600 32px Cairo,sans-serif';x.globalAlpha=.9;x.fillText(EVENT.sub||'',m,215);x.globalAlpha=1;
+x.beginPath();x.roundRect?x.roundRect(190,300,700,700,40):x.rect(190,300,700,700);x.fill();x.imageSmoothingEnabled=false;x.drawImage(im,230,340,620,620);
+x.fillStyle='#fff';x.font='800 58px Cairo,sans-serif';x.fillText('امسح الكود لتسجيل حضورك',m,1110);
+const D=EVENT.date?new Date(EVENT.date):null,ds=D?D.toLocaleDateString('ar-EG-u-nu-latn',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'';
+x.font='600 36px Cairo,sans-serif';x.fillText([ds,EVENT.time,EVENT.place].filter(Boolean).join('  •  '),m,1200);
+const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='registration-qr.png';a.click()}
 const wa=(p,t)=>{let n=String(p||'').replace(/\D/g,'');if(n[0]=='0')n='2'+n;return 'https://wa.me/'+n+'?text='+encodeURIComponent(t)};
 const link=id=>new URL('index.html?cert='+id,location.href).href;
 const msg=s=>($('#tpl').value||'').replace('{name}',(s.name||'').split(' ')[0]).replace('{title}',EVENT.title).replace('{link}',link(s.id));
