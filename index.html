@@ -86,6 +86,19 @@ main{counter-reset:s}h2{counter-increment:s}h2:before{content:counter(s,decimal-
 .pvn{margin-top:8px;text-align:center;background:var(--inp);border-radius:12px;padding:4px 8px;direction:rtl}.pvn small{color:var(--mut)}.pvn span{display:block;font:400 28px 'Great Vibes',cursive;color:var(--p);direction:ltr;min-height:36px}
 .ph0{display:grid;place-items:center;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-size:38px;font-weight:800;margin-inline:auto}
 .sp .cardx{padding:14px 10px}.sp small{line-height:1.5;display:block;margin-top:2px}
+
+header,#pg{display:none!important}
+:root{--card:#ffffffe8;--inp:#fff}
+body{background:none!important}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(#ffffff59,#ffffff26),url(bg.jpg) center bottom/cover no-repeat}
+.cardx,details,.ch3 div,.ms2{backdrop-filter:blur(8px)}
+.info{margin-top:16px!important}
+.tt{text-align:center;padding:18px 14px;margin-bottom:12px}.tt h1{font-size:22px;line-height:1.5;margin:0 0 4px}.tt .en{color:var(--mut);font-size:14px;font-weight:600}.tt p{margin:8px 0 0;font-size:14px}
+.ch3 div{padding:14px 6px}.ch3 b{font-size:15px}.ch3 small{font-size:13px}
+.ms2{max-width:none!important;background:var(--card);border-radius:16px;padding:10px 14px;margin:12px 0 0!important}
+.cta{display:block;text-align:center;margin-top:12px;font-size:18px;padding:14px}
+.sp{grid-template-columns:1fr!important;gap:10px}.sp .cardx{display:flex;align-items:center;gap:14px;text-align:right;padding:12px}.sp .av{width:84px;height:104px;border-radius:14px;margin:0;flex:none;font-size:36px}.sp .si b{display:block;font-size:16px}.sp .si small{margin-top:4px}
+h2{display:inline-block;background:var(--card);padding:6px 12px;border-radius:12px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -94,7 +107,7 @@ main{counter-reset:s}h2{counter-increment:s}h2:before{content:counter(s,decimal-
 <div id="ld"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg></div><div id="pg"></div><div id="nt" class="nt"></div>
 <header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><div class="hr"><a class="btn s" id="hb" href="#reg">سجّل حضورك</a></div></div></header><div class="w" id="cmode"></div>
 <section class="hv" id="hero"><img id="cv" class="cv" alt="" src="cover.jpg"></section>
-<div class="w info"><div class="ch3" id="ch"></div><div class="ms2"><div class="meter"><u id="bar"></u></div><span id="left"></span></div></div>
+<div class="w info"><div class="cardx tt" id="tt"></div><div class="ch3" id="ch"></div><div class="ms2"><div class="meter"><u id="bar"></u></div><span id="left"></span></div><a class="btn cta" id="cta" href="#reg">سجّل الآن</a></div>
 <main class="w">
 <section class="sec rv" id="spw"><h2>ضيوف الندوة</h2><div class="sp" id="sp"></div></section>
 <section class="sec rv" id="reg"><h2>سجّل حضورك</h2><div id="rg"></div></section></main>
@@ -104,10 +117,10 @@ firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySele
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
 let me=JSON.parse(localStorage.getItem(LS)||'null'),photo=me?me.photo:'',C=null,ed=0,tab='q',lk='',QS=[],qsub=0,R={s:0,c:0,o:0,r:''};
-document.title=E.title;$('#hn').textContent=E.title.slice(0,24);$('#ft').textContent='تنظيم: '+(E.organizer||'');
+document.title=E.title;$('#tt').innerHTML=`<h1>${esc(E.title)}</h1><div class="en" dir="ltr">${esc(E.titleEn||'')}</div><p>${esc(E.sub||'')}</p>`;if(me)$('#cta').textContent='حضوري';$('#hn').textContent=E.title.slice(0,24);$('#ft').textContent='تنظيم: '+(E.organizer||'');
 if(E.cover)$('#cv').src=E.cover;
 if(D){const f=(o)=>D.toLocaleDateString('ar-EG-u-nu-latn',o);$('#ch').innerHTML=[['📅',f({weekday:'long'}),f({day:'numeric',month:'long',year:'numeric'})],['🕐','الساعة',E.time],['📍','المكان',E.place]].map(([i,a,b])=>`<div><i>${i}</i><b>${esc(a)}</b><small>${esc(b)}</small></div>`).join('')}
-$('#sp').innerHTML=(E.speakers||[]).map(s=>`<div class="cardx">${s.img?`<img class="av" src="${esc(s.img)}" alt="">`:`<div class="av">${esc(s.name.replace(/^(أ\.د\.|د\.|أ\.)\s*/,'')[0])}</div>`}<b>${esc(s.name)}</b><small>${esc(s.role)}</small></div>`).join('');
+$('#sp').innerHTML=(E.speakers||[]).map(s=>`<div class="cardx">${s.img?`<img class="av" src="${esc(s.img)}" alt="">`:`<div class="av">${esc(s.name.replace(/^(أ\.د\.|د\.|أ\.)\s*/,'')[0])}</div>`}<div class="si"><b>${esc(s.name)}</b><small>${esc(s.role)}</small></div></div>`).join('');
 document.querySelectorAll('.rv').forEach(el=>{const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){el.classList.add('in');o.disconnect()}},{threshold:.05});o.observe(el)});
 addEventListener('scroll',()=>{const r=$('#reg').getBoundingClientRect();$('#sbt').textContent=me?'✅ تم تسجيل حضورك':$('#left').textContent;$('#sb').classList.toggle('on',scrollY>500&&(r.top>innerHeight||r.bottom<0));$('#pg').style.width=scrollY/Math.max(1,document.body.scrollHeight-innerHeight)*100+'%'});
 addEventListener('load',()=>setTimeout(()=>$('#ld').classList.add('off'),450));setTimeout(()=>$('#ld').classList.add('off'),2500);

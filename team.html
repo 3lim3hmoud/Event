@@ -14,6 +14,13 @@ input,select{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(-
 .tk .ob{background:linear-gradient(90deg,#c9a227,#fde68a,#c9a227);color:#3b2f00;font-weight:800;letter-spacing:6px;padding:10px;font-size:18px}
 .tk .ph{width:104px;height:104px;border-radius:50%;object-fit:cover;border:4px solid #fde68a;margin-top:20px}.tk h2{margin:10px 0 0}.tk .rl{display:inline-block;background:#ffffff26;border-radius:99px;padding:4px 14px;margin:8px 0}
 .qr{width:180px;background:#fff;padding:8px;border-radius:14px;margin:12px 0 4px}.code{font:800 22px monospace;letter-spacing:4px;padding-bottom:20px}
+
+body{background:none!important}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(#ffffff59,#ffffff26),url(bg.jpg) center bottom/cover no-repeat}
+.w{max-width:480px}h1{background:#ffffffe6;border-radius:16px;padding:12px;backdrop-filter:blur(8px)}.sub{display:table;margin:0 auto 16px;background:#ffffffe0;border-radius:12px;padding:6px 14px}
+.c{background:#ffffffee!important;backdrop-filter:blur(12px)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.kb{background:#f0fdfa;border:1px dashed var(--p);border-radius:14px;padding:2px 12px 12px;margin-top:14px}
+@media(max-width:400px){.g2{grid-template-columns:1fr}}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -25,13 +32,13 @@ const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 let me=JSON.parse(localStorage.getItem(LS)||'null'),photo='';
 const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>'O'+Array.from(crypto.getRandomValues(new Uint8Array(7)),b=>AL[b%31]).join('');
 function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
-function form(){$('#app').innerHTML=`<div class="c"><label class="up"><input type="file" id="f" accept="image/*" hidden><span id="pv">📷<br>صورتك<br><small>(اختياري)</small></span></label>
-<label>كود التيم (من الأدمن)</label><input id="cd" dir="ltr" autocapitalize="off"><label>الاسم بالعربي</label><input id="n"><label>الاسم بالإنجليزي</label><input id="e" dir="ltr"><label>رقم الموبايل</label><input id="p" type="tel">
-<label>اللجنة</label><select id="r"><option>لجنة الاستقبال</option><option>اللجنة العلمية</option><option>اللوجستيات والتنظيم</option><option>الإعلام والتصوير</option><option>الدعم الطبي</option><option>العلاقات العامة</option><option>أخرى</option></select>
+function form(){$('#app').innerHTML=`<div class="c"><h3 style="margin:0 0 12px;text-align:center">تسجيل عضو في التيم</h3><label class="up"><input type="file" id="f" accept="image/*" hidden><span id="pv">📷<br>صورتك<br><small>(اختياري)</small></span></label>
+<div class="kb"><label>🔑 كود التيم (من الأدمن)</label><input id="cd" dir="ltr" autocapitalize="off"></div><div class="g2"><div><label>الاسم بالعربي</label><input id="n"></div><div><label>الاسم بالإنجليزي</label><input id="e" dir="ltr"></div></div><label>رقم الموبايل</label><input id="p" type="tel">
+
 <div class="er" id="er"></div><button class="btn" onclick="save()">تسجيل في التيم</button></div>`;
 $('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);$('#pv').outerHTML=`<img id="pv" src="${photo}" alt="">`}}}
 const err=t=>$('#er').textContent=t;
-async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.trim(),phone:$('#p').value.trim(),role:$('#r').value,photo,code:$('#cd').value.trim()};
+async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.trim(),phone:$('#p').value.trim(),role:'تنظيم',photo,code:$('#cd').value.trim()};
 if(!d.name||!d.phone||!d.code)return err('كمّل الاسم والموبايل وكود التيم');
 const id=gen();try{await db.doc('organizers/'+id).set({...d,ts:firebase.firestore.FieldValue.serverTimestamp()});delete d.code;me={id,...d};localStorage.setItem(LS,JSON.stringify(me));tkt()}catch(x){err('كود التيم غلط أو حصل خطأ في الاتصال')}}
 function tkt(){const q=qrcode(0,'M');q.addData(me.id);q.make();
