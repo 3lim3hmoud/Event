@@ -16,16 +16,16 @@ input,select{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(-
 .qr{width:180px;background:#fff;padding:8px;border-radius:14px;margin:12px 0 4px}.code{font:800 22px monospace;letter-spacing:4px;padding-bottom:20px}
 
 body{background:none!important}
-body:before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(#ffffff59,#ffffff26),url(bg.jpg) center bottom/cover no-repeat}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(#ffffff26,#ffffff0d),url(bg.jpg) center bottom/cover no-repeat}
 .w{max-width:480px}h1{background:#ffffffe6;border-radius:16px;padding:12px;backdrop-filter:blur(8px)}.sub{display:table;margin:0 auto 16px;background:#ffffffe0;border-radius:12px;padding:6px 14px}
-.c{background:#ffffffee!important;backdrop-filter:blur(12px)}
+.c{background:#ffffffd1!important;backdrop-filter:blur(6px)}.pb{height:230px;border-radius:22px;background:url(bg.jpg) center 70%/cover;box-shadow:0 14px 40px #0d94883a;margin-bottom:14px;border:3px solid #fff}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.kb{background:#f0fdfa;border:1px dashed var(--p);border-radius:14px;padding:2px 12px 12px;margin-top:14px}
 @media(max-width:400px){.g2{grid-template-columns:1fr}}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-<script src="config.js"></script></head><body><div class="w"><h1>🛡️ تيم الأورجنايزر</h1><p class="sub" id="t"></p><div id="app"></div></div>
+<script src="config.js"></script></head><body><div class="w"><div class="pb"></div><h1>🛡️ تيم الأورجنايزر</h1><p class="sub" id="t"></p><div id="app"></div></div>
 <script>
 firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='org_card';$('#t').textContent=EVENT.title;
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
