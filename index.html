@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0ea5a4"><title>تسجيل المؤتمر</title>
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><script>document.documentElement.dataset.t=localStorage.t||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')</script><meta name="theme-color" content="#0ea5a4"><title>تسجيل المؤتمر</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 :root{--p:#0d9488;--p2:#38bdf8;--bg:#f0fbfb;--ink:#0b3b3c;--mut:#5b7f80;--bd:#d3ecec;--ok:#16a34a}
@@ -60,16 +60,33 @@ footer{text-align:center;color:var(--mut);font-size:13px;padding:24px 0 40px}
 .pk .cardx,.sp .cardx{transition:transform .25s,box-shadow .25s}.pk .cardx:hover,.sp .cardx:hover{transform:translateY(-5px);box-shadow:0 16px 34px #0d948830}
 .tk{animation:pop .7s cubic-bezier(.2,1.4,.4,1)}.meter u{background:linear-gradient(90deg,#fff,#a5f3fc,#fff);background-size:200%;animation:sm 2s linear infinite}@keyframes sm{to{background-position:-200% 0}}
 .lk{background:none;border:0;color:#dc2626;text-decoration:underline;font:13px Cairo,sans-serif;margin:0 0 14px;cursor:pointer}
+
+:root{--card:#fff;--inp:#f8fdfd}
+[data-t=dark]{color-scheme:dark;--bg:#071a1c;--ink:#e6fbfa;--mut:#8fb5b6;--bd:#183c3f;--card:#0d2528;--inp:#0a1f22}
+body{background:radial-gradient(800px 380px at 85% 0,#5eead433,transparent),radial-gradient(700px 400px at 0 60%,#38bdf822,transparent),var(--bg);background-attachment:fixed}
+header{background:color-mix(in srgb,var(--bg) 80%,transparent)}.hr{display:flex;gap:8px;align-items:center}
+.ib{width:38px;height:38px;border-radius:12px;border:1px solid var(--bd);background:var(--card);cursor:pointer;font-size:18px}
+.cardx,details,.sx div,.cd div,.btn.g{background:var(--card)}input,select{background:var(--inp)}#ld{background:var(--bg)}
+.cardx{border-radius:22px;box-shadow:0 1px 2px #0d948810,0 14px 40px #0d94881a}input:focus,select:focus{box-shadow:0 0 0 4px #0d948822}
+.hero{padding:56px 0 100px}.ecg{bottom:56px}.wv{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:60px}.sx{margin-top:-46px}
+.fi{position:absolute;font-size:30px;opacity:.35;animation:fl2 7s ease-in-out infinite}@keyframes fl2{50%{transform:translateY(-18px) rotate(8deg)}}
+main{counter-reset:s}h2{counter-increment:s}h2:before{content:counter(s,decimal-leading-zero)!important;width:auto!important;height:auto!important;background:linear-gradient(135deg,var(--p),var(--p2))!important;color:#fff;border-radius:10px!important;padding:2px 8px;font-size:13px;vertical-align:2px!important}
+.tl{position:relative;padding-right:24px}.tl:before{content:"";position:absolute;right:0;top:17px;width:10px;height:10px;border-radius:50%;background:var(--p);box-shadow:0 0 0 4px #0d948826}.tl:after{content:"";position:absolute;right:4px;top:30px;bottom:-14px;width:2px;background:var(--bd)}.tl:last-child:after{display:none}
+.fp{height:6px;background:var(--bd);border-radius:6px;overflow:hidden;margin-bottom:14px}.fp u{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--p),var(--p2));transition:width .4s}
+.tk{position:relative;transition:transform .15s ease-out;will-change:transform}.tk:before{content:"";position:absolute;inset:0;border-radius:22px;padding:2px;background:linear-gradient(135deg,#0d9488,#38bdf8,#a78bfa,#0d9488);background-size:300%;animation:holo 6s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}@keyframes holo{to{background-position:300% 0}}
+.cut{margin:18px 0!important;border-top:2px dashed var(--bd)}.cut:before,.cut:after{content:"";position:absolute;top:-13px;width:24px;height:24px;border-radius:50%;background:var(--bg)}.cut:before{left:-12px}.cut:after{right:-12px}
+[data-t=dark] .pk .hl{background:linear-gradient(135deg,#0d2f33,#2a2a12)}[data-t=dark] .st i{background:#134e4a}[data-t=dark] .sta{background:#0f3d2e}[data-t=dark] .cardx[style*="fffbea"]{background:#2a2410!important}[data-t=dark] .cardx[style*="ecfdf5"]{background:#0f3d2e!important}[data-t=dark] .sta[style*="eff6ff"]{background:#0c2d48!important;color:#7dd3fc!important}[data-t=dark] .nt{background:#3b2f0b;color:#fde68a}[data-t=dark] .up{background:var(--inp)}[data-t=dark] #sb{background:#0d2528f2}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="config.js"></script></head><body><div id="ld"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg></div><div id="pg"></div>
-<header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><a class="btn s" id="hb" href="#reg">سجّل الآن</a></div></header>
+<header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><div class="hr"><button class="ib" id="th" onclick="tt()" aria-label="الوضع الداكن">🌙</button><a class="btn s" id="hb" href="#reg">سجّل الآن</a></div></div></header>
 <div id="nt" class="nt"></div><section class="hero" id="hero"><div class="w"><span class="bd">🎓 شهادة حضور معتمدة لكل مشارك</span><h1 id="ttl"></h1><p id="sub"></p><div class="ch" id="ch"></div><div class="cd" id="cd"></div>
 <div class="ms"><div class="meter"><u id="bar"></u></div><span id="left">جاري تحميل المقاعد...</span></div><p style="margin-top:20px"><a class="btn g" href="#reg">احجز مقعدك ←</a></p></div>
-<svg class="ecg" viewBox="0 0 600 60" preserveAspectRatio="none"><path d="M0 30H120L140 8L165 52L185 30H320L340 8L365 52L385 30H600" fill="none" stroke="#fff" stroke-width="2.5"/></svg></section>
+<span class="fi" style="top:70px;right:6%">🩺</span><span class="fi" style="top:150px;left:7%;animation-delay:1.5s">💉</span><span class="fi" style="bottom:130px;right:12%;animation-delay:3s">🧬</span><span class="fi" style="top:40px;left:30%;animation-delay:4.5s">❤️</span>
+<svg class="ecg" viewBox="0 0 600 60" preserveAspectRatio="none"><path d="M0 30H120L140 8L165 52L185 30H320L340 8L365 52L385 30H600" fill="none" stroke="#fff" stroke-width="2.5"/></svg><svg class="wv" viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0 40C240 90 480 0 720 40S1200 80 1440 30V80H0Z" style="fill:var(--bg)"/></svg></section>
 <div class="w"><div class="sx" id="sx"></div></div><main class="w">
 <section class="sec rv"><h2>عن المؤتمر</h2><div class="cardx" id="ab"></div></section>
 <section class="sec rv"><h2>هتاخد إيه من المؤتمر</h2><div class="pk" id="pk"></div></section>
@@ -107,11 +124,11 @@ const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>Array.from(crypto.getRandomVa
 function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
 db.doc('config/main').onSnapshot(s=>{C=s.data();$('#nt').style.display=C&&C.notice?'block':'none';$('#nt').textContent=C&&C.notice?'📢 '+C.notice:'';if(C){const l=Math.max(0,C.limit-C.count);$('#bar').style.width=Math.min(100,C.count/C.limit*100)+'%';$('#left').textContent=!C.open||l==0?'التسجيل مقفول':`🔥 متبقي ${l} مقعد من ${C.limit}`}view()},()=>view());
 function view(){if(ed)return;if(me)return card();if(C&&(!C.open||C.count>=C.limit))return wl();form()}
-function form(){const m=me||{};$('#rg').innerHTML=`<div class="cardx"><label class="up" style="margin-bottom:6px"><input type="file" id="f" accept="image/*" hidden>${photo?`<img id="pv" src="${photo}" alt="">`:'<span id="pv">📷<br>صورتك</span>'}</label>
+function form(){setTimeout(fp,50);const m=me||{};$('#rg').innerHTML=`<div class="cardx" oninput="fp()" onchange="fp()"><div class="fp"><u id="fpb"></u></div><label class="up" style="margin-bottom:6px"><input type="file" id="f" accept="image/*" hidden>${photo?`<img id="pv" src="${photo}" alt="">`:'<span id="pv">📷<br>صورتك</span>'}</label>
 <label>الاسم بالعربي</label><input id="n" value="${esc(m.name)}" autocomplete="name"><label>الاسم بالإنجليزي (زي ما هيتكتب في الشهادة)</label><input id="e" dir="ltr" value="${esc(m.nameEn)}" oninput="$('#cn2').textContent=this.value||'Your Name'">${cH('cn2',m.nameEn||'Your Name').replace('class="cert"','class="cert mini"')}
 ${m.id?'':`<label>الكود الجامعي</label><input id="u" inputmode="numeric"><label>الفرقة</label><select id="y"><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select>`}
 <label>رقم الموبايل</label><input id="p" type="tel" value="${esc(m.phone)}"><div class="er" id="er"></div><button class="btn" style="width:100%;margin-top:16px" onclick="save()">${m.id?'حفظ التعديل':'تأكيد التسجيل'}</button>${m.id?'<button class="btn g" style="width:100%;margin-top:8px" onclick="ed=0;card()">رجوع</button>':''}</div>`;
-$('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);const p=$('#pv');p.outerHTML=`<img id="pv" src="${photo}" alt="">`}}}
+$('#f').onchange=async e=>{if(e.target.files[0]){photo=await rs(e.target.files[0]);const p=$('#pv');p.outerHTML=`<img id="pv" src="${photo}" alt="">`;fp()}}}
 const err=t=>$('#er').textContent=t;
 async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.trim(),phone:$('#p').value.trim(),photo};
 if(!d.name||!/[A-Za-z]/.test(d.nameEn)||!photo)return err('كمّل الاسم بالعربي والإنجليزي وارفع صورتك');
@@ -163,6 +180,10 @@ async function cancelReg(){if(!confirm('تأكيد إلغاء حجزك؟ هيت�
 function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;z-index:98;pointer-events:none';c.width=innerWidth;c.height=innerHeight;document.body.appendChild(c);const x=c.getContext('2d'),P=Array.from({length:150},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,r:4+Math.random()*6,vx:Math.random()*4-2,vy:2+Math.random()*4,c:['#0d9488','#38bdf8','#fde047','#fb7185','#34d399'][Math.floor(Math.random()*5)]}));let f=0;(function a(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.r,p.r*1.6)});if(++f<180)requestAnimationFrame(a);else c.remove()})()}
 addEventListener('load',()=>setTimeout(()=>$('#ld').classList.add('off'),450));setTimeout(()=>$('#ld').classList.add('off'),2500);
 addEventListener('scroll',()=>{$('#pg').style.width=scrollY/Math.max(1,document.body.scrollHeight-innerHeight)*100+'%'});
+
+function tt(){const d=document.documentElement,n=d.dataset.t=='dark'?'light':'dark';d.dataset.t=n;localStorage.t=n;$('#th').textContent=n=='dark'?'☀️':'🌙'}$('#th').textContent=document.documentElement.dataset.t=='dark'?'☀️':'🌙';
+function fp(){const ids=['n','e','p'].concat($('#u')?['u']:[]),f=ids.filter(i=>$('#'+i)&&$('#'+i).value.trim()).length+(photo?1:0),el=$('#fpb');if(el)el.style.width=f/(ids.length+1)*100+'%'}
+document.addEventListener('pointermove',e=>{const k=e.target.closest&&e.target.closest('.tk');document.querySelectorAll('.tk').forEach(t=>{if(t!==k)t.style.transform=''});if(!k||e.pointerType=='touch')return;const r=k.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;k.style.transform=`perspective(900px) rotateY(${x*8}deg) rotateX(${-y*8}deg)`});
 function ics(){if(!D)return;const f=d=>d.toISOString().replace(/[-:]|\.\d+/g,''),e=new Date(+D+(E.hours||4)*36e5),t=`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${f(D)}\nDTEND:${f(e)}\nSUMMARY:${E.title}\nLOCATION:${E.place||''}\nEND:VEVENT\nEND:VCALENDAR`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/calendar'}));a.download='event.ics';a.click()}
 function png(){const q=qrcode(0,'M');q.addData(me.id);q.make();const L=s=>new Promise(r=>{const i=new Image;i.onload=()=>r(i);i.src=s});
 Promise.all([L(me.photo),L(q.createDataURL(8))]).then(([p,Q])=>{const c=document.createElement('canvas');c.width=600;c.height=880;const x=c.getContext('2d');x.direction='rtl';x.textAlign='center';x.fillStyle='#fff';x.fillRect(0,0,600,880);
