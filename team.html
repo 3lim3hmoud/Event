@@ -29,7 +29,7 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradi
 <script>
 firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='org_card';$('#t').textContent=EVENT.title;
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let me=JSON.parse(localStorage.getItem(LS)||'null'),photo='';
+let me=JSON.parse(localStorage.getItem(LS)||'null'),photo='',QR=null;
 const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>'O'+Array.from(crypto.getRandomValues(new Uint8Array(7)),b=>AL[b%31]).join('');
 function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
 function form(){$('#app').innerHTML=`<div class="c"><h3 style="margin:0 0 12px;text-align:center">تسجيل عضو في التيم</h3><label class="up"><input type="file" id="f" accept="image/*" hidden><span id="pv">📷<br>صورتك<br><small>(اختياري)</small></span></label>
@@ -42,6 +42,8 @@ async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.tr
 if(!d.name||!d.phone||!d.code)return err('كمّل الاسم والموبايل وكود التيم');
 const id=gen();try{await db.doc('organizers/'+id).set({...d,ts:firebase.firestore.FieldValue.serverTimestamp()});delete d.code;me={id,...d};localStorage.setItem(LS,JSON.stringify(me));tkt()}catch(x){err('كود التيم غلط أو حصل خطأ في الاتصال')}}
 function tkt(){const q=qrcode(0,'M');q.addData(me.id);q.make();
-$('#app').innerHTML=`<div class="tk"><div class="ob">ORGANIZER</div>${me.photo?`<img class="ph" src="${me.photo}" alt="">`:`<div class="ph" style="display:grid;place-items:center;margin:20px auto 0;background:#ffffff26;font-size:40px;font-weight:800">${esc((me.name||"؟")[0])}</div>`}<h2>${esc(me.name)}</h2><div dir="ltr" style="opacity:.8">${esc(me.nameEn)}</div><div class="rl">🛡️ ${esc(me.role)}</div><div style="opacity:.8;font-size:14px">${esc(EVENT.title)}</div><br><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div></div><p class="sub" style="margin-top:14px">تذكرتك محفوظة على الموبايل. للتعديل كلّم الأدمن.</p>`}
+$('#app').innerHTML=`<div class="tk"><div class="ob">ORGANIZER</div>${me.photo?`<img class="ph" src="${me.photo}" alt="">`:`<div class="ph" style="display:grid;place-items:center;margin:20px auto 0;background:#ffffff26;font-size:40px;font-weight:800">${esc((me.name||"؟")[0])}</div>`}<h2>${esc(me.name)}</h2><div dir="ltr" style="opacity:.8">${esc(me.nameEn)}</div><div class="rl">🛡️ ${esc(me.role)}</div><div style="opacity:.8;font-size:14px">${esc(EVENT.title)}</div><br><div class="qb" style="display:none"><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div></div><div class="qh" style="display:none;padding:26px 16px 30px;opacity:.85">🔒 الـ QR مخفي حالياً من الإدارة</div></div><p class="sub" style="margin-top:14px">تذكرتك محفوظة على الموبايل. للتعديل كلّم الأدمن.</p>`;ap()}
 if(me)tkt();else form();
+function ap(){document.querySelectorAll('.qb').forEach(e=>e.style.display=QR===true?'':'none');document.querySelectorAll('.qh').forEach(e=>e.style.display=QR===false?'block':'none')}
+db.doc('config/main').onSnapshot(s=>{QR=(s.data()||{}).orgQr!==false;ap()},()=>{QR=true;ap()});
 </script></body></html>
