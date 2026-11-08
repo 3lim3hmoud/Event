@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><script>document.documentElement.dataset.t=localStorage.t||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>إدارة الحضور</title>
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>إدارة الحضور</title>
 <style>
 :root{--bg:#f0fbfb;--cd:#fff;--tx:#0b3b3c;--pr:#0d9488;--bd:#d3ecec}
 .c{box-shadow:0 8px 24px #0d94880f}button{background:linear-gradient(135deg,#0d9488,#38bdf8)}button.g{background:#fff}.meter{height:10px;background:#e0f2f1;border-radius:9px;overflow:hidden;margin-top:4px}.meter u{display:block;height:100%;background:#99f6e4;border-radius:9px}.meter i{display:block;height:100%;background:#0d9488}#res{font-size:20px;box-shadow:0 10px 30px #0003}
@@ -18,7 +18,7 @@ button{padding:10px 14px;border:0;border-radius:10px;background:var(--pr);color:
 .rn{font-size:36px;font-weight:800;margin:20px 0}.rn.win{font-size:42px;animation:pop .6s}.rp{width:160px;height:160px;border-radius:50%;object-fit:cover;border:5px solid #fff;margin-top:20px}
 .wab{display:inline-block;padding:7px 10px;border-radius:10px;border:1px solid var(--bd);text-decoration:none}
 
-:root{--inp:#f8fdfd}[data-t=dark]{color-scheme:dark;--bg:#071a1c;--cd:#0d2528;--tx:#e6fbfa;--bd:#183c3f;--inp:#0a1f22}
+:root{--inp:#f8fdfd}
 body{background:radial-gradient(900px 400px at 80% -10%,#99f6e444,transparent),var(--bg)}.c{border-radius:20px}
 input{background:var(--inp)!important;border-radius:12px}input:focus{outline:0;border-color:var(--pr);box-shadow:0 0 0 4px #0d948822}
 .st{gap:10px}.st div{border-radius:16px;padding:14px 6px;position:relative;overflow:hidden}.st div:before{content:attr(data-i);position:absolute;top:4px;left:8px;font-size:18px;opacity:.5}.st b{background:linear-gradient(135deg,#0d9488,#38bdf8);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -35,7 +35,7 @@ th{position:sticky;top:0;background:var(--cd);z-index:1}tbody tr:hover td{backgr
 <script src="config.js"></script></head><body><div class="w">
 <div id="lg" class="c"><h2>دخول</h2><input id="code" placeholder="كود المساعد" autocapitalize="characters"><button onclick="loginStaff()">دخول</button>
 <hr><small>أدمن؟</small><input id="em" type="email" placeholder="الإيميل" dir="ltr"><input id="pw" type="password" placeholder="الباسورد" dir="ltr"><button class="g" onclick="loginAdmin()">دخول الأدمن</button></div>
-<div id="mn" class="hide"><div class="c"><button id="b1" onclick="tab(1)">الماسح</button><button class="g" onclick="localStorage.removeItem('sc');location.reload()">خروج</button><button class="g" onclick="const d=document.documentElement,n=d.dataset.t=='dark'?'light':'dark';d.dataset.t=n;localStorage.t=n">🌓</button><button id="b2" class="g hide" onclick="tab(2)">لوحة التحكم</button></div>
+<div id="mn" class="hide"><div class="c"><button id="b1" onclick="tab(1)">الماسح</button><button class="g" onclick="localStorage.removeItem('sc');location.reload()">خروج</button><button id="b2" class="g hide" onclick="tab(2)">لوحة التحكم</button></div>
 <div id="t1"><div class="c"><div class="scw"><div id="rd"></div><i class="sl"></i><b class="k1"></b><b class="k2"></b><b class="k3"></b><b class="k4"></b></div><div id="rd2" class="hide"></div><div id="ce" style="color:#dc2626;font-size:14px;margin-top:8px"></div><div id="pq" style="text-align:center;font-weight:700;color:#d97706;margin-top:6px"></div><button class="g" onclick="scan()">تشغيل الكاميرا</button><button class="g" onclick="$('#fl').click()">صوّر QR</button><input id="fl" type="file" accept="image/*" capture="environment" class="hide" onchange="fscan(this)"><div class="row"><input id="man" placeholder="أو اكتب كود الطالب" dir="ltr" autocapitalize="characters"><button onclick="go($('#man').value)">تأكيد</button></div></div><div id="res"></div></div>
 <div id="t2" class="hide"><div class="c"><button onclick="bs(1)">📺 شاشة العرض</button><button onclick="raffle()">🎁 سحب عشوائي</button></div><div class="c st"><div data-i="👥"><b id="s1">0</b>مسجل</div><div data-i="✅"><b id="s2">0</b>حضر</div><div data-i="⏳"><b id="s3">0</b>لم يحضر</div><div data-i="🎯"><b id="s4">0</b>الحد</div></div>
 <div class="c"><div class="meter" style="height:14px"><u id="pgb" style="width:0;background:linear-gradient(90deg,#0d9488,#38bdf8);transition:width .8s"></u></div><small id="pgt"></small></div>
