@@ -28,6 +28,9 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:url(bg.jpg) 
 .rt{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--bd)}.st5 i{font-style:normal;font-size:24px;color:#f59e0b;cursor:pointer;padding:0 2px}
 .wnr{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:14px;padding:10px;text-align:center;font-weight:800;margin-bottom:8px;color:#78350f}.wnr span{display:inline-block;background:#fff;border-radius:99px;padding:3px 12px;margin:4px 3px 0;font-weight:700}
 .md{position:fixed;inset:0;background:#0008;display:grid;place-items:center;padding:16px;z-index:60}.md .c{max-width:360px;width:100%}.md .pp{width:96px;height:96px;font-size:38px}.btn2{display:inline-block;margin:8px 0;padding:8px 16px;border-radius:12px;background:#16a34a;color:#fff;text-decoration:none;font-weight:700}.rl2{display:inline-block;background:#ccfbf1;border-radius:99px;padding:2px 12px;margin-top:6px}
+
+.tabs2 button{position:relative}.bd{font-style:normal;position:absolute;top:-7px;inset-inline-end:-3px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:#ef4444;color:#fff;font-size:12px;line-height:20px}
+.wr{background:#fef3c7;color:#78350f;border-radius:12px;padding:8px 10px;margin-bottom:8px;font-size:14px}.mg.me small{text-align:left}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -54,36 +57,54 @@ $('#app').innerHTML=`<div class="tk"><div class="ob" onclick="tg()" style="curso
 if(me)tkt();else form();
 function ast(){const e=$('#ast');if(e)e.style.display=OA?'inline-block':'none'}
 const wn=p=>{let n=String(p||'').replace(/\D/g,'');if(n[0]=='0')n='2'+n;return n},nm=id=>(ORG.find(o=>o.id==id)||{}).name||'؟',TS2=()=>firebase.firestore.FieldValue.serverTimestamp();
+let ERRS={};
+const mts=m=>m.ts&&m.ts.seconds||0,inc=()=>CHAT.filter(m=>m.oid!=me.id).concat(DMS.filter(m=>m.to==me.id)),
+unread=()=>{const t=+localStorage.org_seen||0;return inc().filter(m=>mts(m)>t).length},
+seen=()=>{const t=Math.max(0,...inc().map(mts));if(t)try{localStorage.org_seen=t}catch(e){}};
+function socErr(e){const x=$('#soc');if(!x)return;const c=String(e&&e.code||e&&e.message||e);let t,h='',b='<button class="btn" style="margin-top:10px" onclick="soc()">🔄 جرّب تاني</button>';
+if(e===1){t='حسابك اتمسح من الإدارة';h='سجّل من جديد بكود التيم.';b='<button class="btn" style="margin-top:10px" onclick="try{localStorage.removeItem(LS)}catch(e){};location.reload()">تسجيل من جديد</button>'}
+else if(e===2){t='الحساب ده مربوط بجهاز تاني';h='كلّم الأدمن يفك ربط الجهاز من لوحة الأورجنايزر، وبعدها اضغط جرّب تاني.'}
+else if(/operation-not-allowed|admin-restricted/.test(c)){t='تسجيل الدخول المجهول مقفول';h='على الأدمن يفتح Anonymous من Firebase ← Authentication ← Sign-in method.'}
+else if(/permission-denied/.test(c)){t='الصلاحيات مش متظبطة';h='على الأدمن ينشر ملف firestore.rules الأخير من Firebase Console.'}
+else if(/network|unavailable|offline/.test(c)){t='مفيش اتصال بالنت';h='اتأكد من النت وجرّب تاني.'}
+else{t='مقدرناش نجهّز الشات';h='جرّب تاني، ولو فضلت المشكلة ابعت للأدمن الكود اللي تحت.'}
+x.innerHTML=`<div class="c" style="margin-top:12px;text-align:center"><div style="font-size:34px">⚠️</div><b>${t}</b><p style="color:var(--mut);margin:6px 0">${h}</p><small dir="ltr" style="color:var(--mut)">${esc(c)}</small><br>${b}</div>`}
 async function soc(){const el=$('#soc');if(!el)return;
 if(!UID){el.innerHTML='<div class="c" style="margin-top:12px;text-align:center">⏳ جاري تجهيز مساحة التيم...</div>';
-try{await auth2.signInAnonymously();UID=auth2.currentUser.uid;await lnk();subs()}catch(e){UID=null;const x=$('#soc');if(x)x.innerHTML='';return}}
+try{await auth2.signInAnonymously();UID=auth2.currentUser.uid;await lnk();subs()}catch(e){UID=null;socErr(e);return}}
 socR()}
 async function lnk(){const od=db2.doc('organizers/'+me.id),s=await od.get();if(!s.exists)throw 1;const u=s.data().uid;if(!u)await od.update({uid:UID});else if(u!==UID)throw 2;const oa=db2.doc('orgAuth/'+UID),g=await oa.get();if(!g.exists)await oa.set({oid:me.id})}
-function subs(){if(window.sb)return;window.sb=1;const L=s=>s.docs.map(d=>({id:d.id,...d.data()})),N=()=>{};
-db2.collection('organizers').onSnapshot(s=>{ORG=L(s);socR()},N);
-db2.collection('chat').orderBy('ts','desc').limit(100).onSnapshot(s=>{CHAT=L(s).reverse();socR()},N);
-db2.collection('dms').where('members','array-contains',UID).onSnapshot(s=>{DMS=L(s).sort((a,b)=>(a.ts&&a.ts.seconds||9e9)-(b.ts&&b.ts.seconds||9e9));socR()},N);
-db2.collection('ratings').where('uid','==',UID).onSnapshot(s=>{MY={};s.docs.forEach(d=>MY[d.data().to]=d.data().stars);socR()},N)}
+function subs(){if(window.sb)return;window.sb=1;const L=s=>s.docs.map(d=>({id:d.id,...d.data()})),N=k=>e=>{ERRS[k]=(e&&e.code)||'error';socR()},K=k=>{delete ERRS[k]};
+db2.collection('organizers').onSnapshot(s=>{K('org');ORG=L(s);socR()},N('org'));
+db2.collection('chat').orderBy('ts','desc').limit(100).onSnapshot(s=>{K('chat');CHAT=L(s).reverse();socR()},N('chat'));
+db2.collection('dms').where('members','array-contains',UID).onSnapshot(s=>{K('dms');DMS=L(s).sort((a,b)=>(a.ts&&a.ts.seconds||9e9)-(b.ts&&b.ts.seconds||9e9));socR()},N('dms'));
+db2.collection('ratings').where('uid','==',UID).onSnapshot(s=>{MY={};s.docs.forEach(d=>MY[d.data().to]=d.data().stars);socR()},N('rt'))}
 function win(){const w=CFG.winners||[];if(!w.length)return'';return `<div class="wnr">${w.some(x=>x.id==me.id)?'🎉 مبروك! إنت من الفايزين بالمكافأة':'🏆 الفائزون بالمكافأة'}<div>${w.map(x=>`<span>${esc(x.name)}</span>`).join('')}</div></div>`}
 function socR(){const el=$('#soc');if(!el||!UID)return;
 if(!$('#st'))el.innerHTML='<div class="c" style="margin-top:12px;padding:12px"><div id="wn"></div><div class="tabs2" id="st"></div><div id="sbd"></div></div>';
 $('#wn').innerHTML=win();
-$('#st').innerHTML=[['t','👥 التيم'],['c','💬 الشات'],['r','⭐ التقييم']].map(([k,l])=>`<button class="${tabS==k?'on':''}" onclick="stab('${k}')">${l}</button>`).join('');
+const u=unread();$('#st').innerHTML=[['t','👥 التيم'],['c','💬 الشات'],['r','⭐ التقييم']].map(([k,l])=>`<button class="${tabS==k?'on':''}" onclick="stab('${k}')">${l}${k=='c'&&tabS!='c'&&u?`<i class="bd">${u>99?'99+':u}</i>`:''}</button>`).join('');
 if(tabS=='t')dT();else if(tabS=='c')dC();else dR()}
 function stab(k){tabS=k;socR()}
 function dm(id){peer=id;stab('c')}
 function dT(){$('#sbd').innerHTML=ORG.length?'<div class="dg">'+ORG.map(o=>`<div class="dc"><div onclick="prf('${o.id}')">${o.photo?`<img src="${o.photo}" alt="">`:`<b class="di">${esc((o.name||'؟')[0])}</b>`}<b>${esc(o.name)}${o.id==me.id?' (أنت)':''}</b><small>${esc(o.role||'تنظيم')}${o.checkedIn?' • ✅':''}</small></div>${o.id!=me.id&&o.uid?`<button onclick="dm('${o.id}')">💬 رسالة</button>`:''}</div>`).join('')+'</div>':'<p style="text-align:center;color:var(--mut)">لسه مفيش أورجنايزر</p>'}
 function prf(id){const o=ORG.find(x=>x.id==id);if(!o)return;const m=document.createElement('div');m.className='md';m.onclick=e=>{if(e.target==m)m.remove()};
 m.innerHTML=`<div class="c" style="text-align:center">${o.photo?`<img class="pp" src="${o.photo}" alt="">`:`<b class="pp">${esc((o.name||'؟')[0])}</b>`}<h3 style="margin:10px 0 2px">${esc(o.name)}</h3><div dir="ltr" style="color:var(--mut)">${esc(o.nameEn||'')}</div><div class="rl2">🛡️ ${esc(o.role||'تنظيم')}</div><p>🎓 كود جامعي: ${esc(o.univ||'-')}</p><p>${o.checkedIn?'✅ حضوره متأكد':'⏳ حضوره لسه ما اتأكدش'}</p>${o.phone?`<a class="btn2" href="https://wa.me/${wn(o.phone)}" target="_blank" rel="noopener">📞 ${esc(o.phone)}</a>`:''}${o.id!=me.id&&o.uid?`<button class="btn" onclick="this.closest('.md').remove();dm('${o.id}')">💬 ابعتله رسالة</button>`:''}<button class="btn" style="background:#e2e8f0;color:#0f172a" onclick="this.closest('.md').remove()">إغلاق</button></div>`;document.body.appendChild(m)}
-function dC(){const op='<option value="">🌐 الشات العام</option>'+ORG.filter(o=>o.id!=me.id&&o.uid).map(o=>`<option value="${o.id}">🔒 ${esc(o.name)}</option>`).join('');
-if(!$('#msgs'))$('#sbd').innerHTML='<select id="ct" onchange="peer=this.value;dC()" style="margin-bottom:8px"></select><div id="msgs"></div><div class="row2"><input id="mi" placeholder="اكتب رسالتك..." maxlength="500" onkeydown="if(event.key==\'Enter\')sm()"><button class="btn" style="width:auto;margin:0;padding:10px 18px" onclick="sm()">إرسال</button></div><small id="ctn" style="color:var(--mut)"></small>';
+function dC(){const op='<option value="">🌐 الشات العام</option>'+ORG.filter(o=>o.id!=me.id&&o.uid).map(o=>`<option value="${o.id}">🔒 ${esc(o.name)}</option>`).join(''),fresh=!$('#msgs');
+if(fresh)$('#sbd').innerHTML='<div id="cw"></div><select id="ct" onchange="peer=this.value;dC()" style="margin-bottom:8px"></select><div id="msgs"></div><div class="row2"><input id="mi" placeholder="اكتب رسالتك..." maxlength="500" onkeydown="if(event.key==\'Enter\')sm()"><button class="btn" id="mb" style="width:auto;margin:0;padding:10px 18px" onclick="sm()">إرسال</button></div><small id="ctn" style="color:var(--mut)"></small>';
 const s=$('#ct');if(s.dataset.o!=op){s.innerHTML=op;s.dataset.o=op}s.value=peer;
+const cl=CFG.chatOpen===false,er=peer?ERRS.dms:ERRS.chat;
+$('#cw').innerHTML=er?`<div class="wr">⚠️ مش قادر أقرا الرسائل (${esc(er)}). ${/permission/.test(er)?'على الأدمن ينشر ملف firestore.rules الأخير.':'جرّب تحدّث الصفحة.'}</div>`:cl?'<div class="wr">🔒 الشات مقفول من الإدارة دلوقتي</div>':'';
+$('#mi').disabled=$('#mb').disabled=cl;
 $('#ctn').textContent=peer?'🔒 رسالة خاصة بينكم انتو الاتنين':'🌐 شات عام لكل الأورجنايزر';
-const L=peer?DMS.filter(m=>(m.oid==peer&&m.to==me.id)||(m.oid==me.id&&m.to==peer)):CHAT,e=$('#msgs');
-e.innerHTML=L.length?L.map(m=>`<div class="mg${m.oid==me.id?' me':''}"><small>${m.oid==me.id?'أنت':esc(nm(m.oid))}</small><div>${esc(m.text)}</div></div>`).join(''):'<small style="color:var(--mut)">لسه مفيش رسائل</small>';e.scrollTop=e.scrollHeight}
+const L=peer?DMS.filter(m=>(m.oid==peer&&m.to==me.id)||(m.oid==me.id&&m.to==peer)):CHAT,e=$('#msgs'),
+tm=m=>{const t=m.ts&&m.ts.toDate?m.ts.toDate():null;return t?t.toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'}):'⏳'},
+nb=e.scrollHeight-e.scrollTop-e.clientHeight<60;
+e.innerHTML=L.length?L.map(m=>`<div class="mg${m.oid==me.id?' me':''}"><small>${m.oid==me.id?'أنت':esc(nm(m.oid))} • ${tm(m)}</small><div>${esc(m.text)}</div></div>`).join(''):'<small style="color:var(--mut)">لسه مفيش رسائل</small>';
+if(fresh||nb)e.scrollTop=e.scrollHeight;seen()}
 async function sm(){const i=$('#mi'),t=i.value.trim();if(!t)return;if(Date.now()-(+localStorage.ml||0)<1500)return;if(CFG.chatOpen===false)return alert('الشات مقفول دلوقتي');
 const d={oid:me.id,uid:UID,text:t,ts:TS2()};
-try{if(peer){const o=ORG.find(x=>x.id==peer);d.to=peer;d.members=[UID,o.uid];await db2.collection('dms').add(d)}else await db2.collection('chat').add(d);localStorage.ml=Date.now();i.value=''}catch(e){alert('مقدرتش أبعت الرسالة')}}
+try{if(peer){const o=ORG.find(x=>x.id==peer);d.to=peer;d.members=[UID,o.uid];await db2.collection('dms').add(d)}else await db2.collection('chat').add(d);localStorage.ml=Date.now();i.value=''}catch(e){alert('مقدرتش أبعت الرسالة'+(e&&e.code=='permission-denied'?' — الشات مقفول أو الصلاحيات مش متظبطة':''))}}
 function dR(){if(!CFG.rateOpen){$('#sbd').innerHTML='<p style="text-align:center;color:var(--mut)">🔒 التقييم لسه ما اتفتحش. هيتفتح في آخر الندوة.</p>';return}
 $('#sbd').innerHTML='<p style="margin:0 0 8px;color:var(--mut)">قيّم زمايلك من 1 لـ 5 ⭐ (التقييم سري)</p>'+ORG.filter(o=>o.id!=me.id).map(o=>`<div class="rt"><span>${esc(o.name)}<small style="color:var(--mut)"> ${esc(o.role||'')}</small></span><span class="st5" dir="ltr">${[1,2,3,4,5].map(i=>`<i onclick="rate('${o.id}',${i})">${(MY[o.id]||0)>=i?'★':'☆'}</i>`).join('')}</span></div>`).join('')}
 async function rate(to,n){const old=MY[to];MY[to]=n;dR();try{await db2.doc('ratings/'+me.id+'_'+to).set({from:me.id,to,stars:n,uid:UID,ts:TS2()})}catch(e){MY[to]=old;dR();alert('مقدرتش أحفظ التقييم')}}
