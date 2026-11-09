@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b2a5f">
+<meta name="robots" content="noindex,nofollow">
+<title>التحقق من الشهادة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0b2a5f;--navy2:#16408a;--gold:#b78a2c;--gold-l:#e6c870;--gold-d:#8f6a1a;--bg:#f4f1e8;--ink:#14213d;--mut:#64708a;--bd:#e4dcc4;--ok:#15803d;--okbg:#ecfdf3;--bad:#b91c1c;--badbg:#fef2f2;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Cairo,system-ui,Tahoma,sans-serif;line-height:1.6;min-height:100vh}
+.w{max-width:620px;margin:0 auto;padding:0 16px}
+header.top{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-bottom:4px solid var(--gold);padding:18px 0 16px;text-align:center}
+header.top b{display:block;font-size:17px;font-weight:800;line-height:1.4}
+header.top small{display:block;color:var(--gold-l);font-size:13px;margin-top:2px;letter-spacing:.3px}
+header.top .tag{display:inline-block;margin-top:10px;padding:3px 14px;border:1px solid var(--gold);border-radius:99px;font-size:12px;color:var(--gold-l)}
+main{padding:22px 0 40px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(11,42,95,.08);margin-bottom:16px}
+.status{padding:26px 18px 22px;text-align:center}
+.status.ok{background:var(--okbg);border-bottom:1px solid #bbf7d0}
+.status.bad{background:var(--badbg);border-bottom:1px solid #fecaca}
+.status svg{width:68px;height:68px}
+.status h1{margin:10px 0 2px;font-size:23px;font-weight:800}
+.status.ok h1{color:var(--ok)}.status.bad h1{color:var(--bad)}
+.status p{margin:0;color:var(--mut);font-size:14px}
+.status .en{direction:ltr;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);margin-top:4px}
+.sec{padding:6px 18px 14px}
+.sec h2{margin:0;padding:14px 0 8px;font-size:15px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px}
+.sec h2:before{content:"";width:4px;height:16px;border-radius:2px;background:var(--gold)}
+.row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px dashed var(--bd);align-items:baseline}
+.row:first-of-type{border-top:0}
+.row span{color:var(--mut);font-size:13px;flex:0 0 auto}
+.row b{font-weight:700;text-align:left;word-break:break-word}
+.row b.ltr{direction:ltr;unicode-bidi:plaintext}
+.row b.code{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:1.5px;color:var(--navy)}
+.name{padding:6px 18px 4px}
+.name .ar{font-size:22px;font-weight:800;color:var(--navy);line-height:1.4}
+.name .en{direction:ltr;text-align:right;font-size:16px;color:var(--gold-d);font-weight:600;margin-top:2px}
+.foot{text-align:center;color:var(--mut);font-size:12px;padding:4px 0 8px}
+.look{padding:18px}
+.look label{display:block;font-weight:700;margin-bottom:8px;color:var(--navy)}
+.look .f{display:flex;gap:8px}
+.look input{flex:1;min-width:0;padding:12px 14px;border:1.5px solid var(--bd);border-radius:12px;font:600 16px ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:2px;direction:ltr;text-align:center;background:#fffdf8}
+.look input:focus{outline:0;border-color:var(--gold)}
+.btn{border:0;border-radius:12px;padding:12px 20px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;font:700 15px Cairo,sans-serif;cursor:pointer}
+.btn.l{background:#fff;color:var(--navy);border:1.5px solid var(--bd)}
+.center{text-align:center}
+.spin{width:38px;height:38px;border:4px solid var(--bd);border-top-color:var(--navy);border-radius:50%;margin:46px auto;animation:r .8s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@media print{header.top .tag,.look,.noprint{display:none}body{background:#fff}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="w">
+  <b id="uni">جامعة الريادة للعلوم والتكنولوجيا</b>
+  <small id="fac">كلية التمريض</small>
+  <span class="tag">نظام التحقق من الشهادات</span>
+</div></header>
+
+<main class="w">
+  <div id="out"><div class="spin" aria-label="جاري التحقق"></div></div>
+  <div class="card look noprint" id="look" hidden>
+    <label for="code">اكتب كود الشهادة للتحقق منها</label>
+    <div class="f"><input id="code" maxlength="16" placeholder="XXXXXXXX" autocomplete="off" autocapitalize="characters" inputmode="latin"><button class="btn" id="go" type="button">تحقق</button></div>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="config.js"></script>
+<script>
+firebase.initializeApp(FB);
+const db=firebase.firestore(),$=s=>document.querySelector(s),E=window.EVENT||{};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clean=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const row=(k,v,cls)=>v?`<div class="row"><span>${k}</span><b class="${cls||''}">${v}</b></div>`:'';
+const ICON_OK='<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#16a34a"/><path d="M18 33l9 9 19-21" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_BAD='<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#dc2626"/><path d="M21 21l22 22M43 21L21 43" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>';
+
+if(E.organizer){const p=String(E.organizer).split('–').map(s=>s.trim());if(p[1])$('#uni').textContent=p[1];if(p[0])$('#fac').textContent=p[0]}
+
+function stateBox(ok,title,sub,en){return `<div class="card"><div class="status ${ok?'ok':'bad'}">${ok?ICON_OK:ICON_BAD}<h1>${title}</h1><p>${sub}</p>${en?`<div class="en">${en}</div>`:''}</div></div>`}
+
+async function verify(raw){
+  const id=clean(raw),out=$('#out');
+  $('#look').hidden=false;
+  if(!id){out.innerHTML='<div class="card"><div class="status" style="background:#f3f6fc;border-bottom:1px solid var(--bd)"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4l22 8v18c0 14-9 25-22 30C19 55 10 44 10 30V12z" fill="#0b2a5f"/><path d="M21 32l8 8 15-17" fill="none" stroke="#e6c870" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><h1 style="color:var(--navy)">التحقق من الشهادة</h1><p>امسح الـ QR اللي على الشهادة، أو اكتب كودها تحت.</p></div></div>';return}
+  $('#code').value=id;
+  out.innerHTML='<div class="spin"></div>';
+  try{
+    const s=await db.doc('students/'+id).get();
+    if(!s.exists||!s.data().checkedIn){
+      out.innerHTML=stateBox(false,'شهادة غير صالحة','الكود ده مش موجود في سجل حضور الندوة. اتأكد من الكود وحاول تاني.','Invalid certificate');return}
+    const d=s.data(),a=d.at&&d.at.toDate?d.at.toDate():null,D=E.date?new Date(E.date):null;
+    const fmt=(o)=>{try{return D.toLocaleDateString('ar-EG-u-nu-latn',Object.assign({timeZone:'Africa/Cairo'},o))}catch(e){return ''}};
+    const dateS=D?fmt({weekday:'long',day:'numeric',month:'long',year:'numeric'}):'';
+    let attS='';if(a){try{attS=a.toLocaleString('ar-EG-u-nu-latn',{timeZone:'Africa/Cairo',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'2-digit'})}catch(e){}}
+    const nm=esc(d.name||''),ne=esc(d.nameEn||'');
+    out.innerHTML=
+      `<div class="card">
+        <div class="status ok">${ICON_OK}<h1>شهادة صحيحة وموثّقة</h1><p>الشخص ده سجّل حضوره فعلاً في الندوة</p><div class="en">Verified certificate</div></div>
+        <div class="sec"><h2>الحاصل على الشهادة</h2>
+          <div class="name">${nm?`<div class="ar">${nm}</div>`:''}${ne?`<div class="en">${ne}</div>`:''}</div>
+          ${row('الكود الجامعي',esc(d.univ),'ltr')}
+          ${row('الفرقة',esc(d.year))}
+          ${row('وقت تسجيل الحضور',esc(attS))}
+          ${row('رقم الشهادة',esc(id),'ltr code')}
+        </div>
+        <div class="sec"><h2>بيانات الندوة</h2>
+          ${row('الندوة',esc(E.title))}
+          ${row('Seminar',esc(E.titleEn),'ltr')}
+          ${row('الجهة المنظمة',esc(E.organizer))}
+          ${row('التاريخ',esc(dateS))}
+          ${row('الوقت',esc(E.time))}
+          ${row('المكان',esc(E.place))}
+        </div>
+      </div>
+      <div class="foot">تم التحقق بتاريخ ${esc(new Date().toLocaleString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'2-digit'}))}</div>
+      <div class="center noprint"><button class="btn l" onclick="window.print()">🖨️ طباعة صفحة التحقق</button></div>`;
+  }catch(e){
+    out.innerHTML=stateBox(false,'مشكلة في الاتصال','مقدرناش نوصل للسجل دلوقتي. اتأكد من النت وحاول تاني.')+'<div class="center"><button class="btn" onclick="verify($(\'#code\').value)">إعادة المحاولة</button></div>';
+  }
+}
+
+function go(){const v=clean($('#code').value);if(!v)return;history.replaceState(null,'','?id='+v);verify(v)}
+$('#go').addEventListener('click',go);
+$('#code').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+const qp=new URLSearchParams(location.search);
+verify(qp.get('id')||qp.get('verify')||'');
+</script>
+</body>
+</html>

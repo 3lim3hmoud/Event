@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0ea5a4"><title>تسجيل الندوة</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Great+Vibes&family=Cinzel:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{--p:#0d9488;--p2:#38bdf8;--bg:#f0fbfb;--ink:#0b3b3c;--mut:#5b7f80;--bd:#d3ecec;--ok:#16a34a}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Cairo,system-ui,Tahoma,sans-serif}
@@ -111,7 +111,7 @@ header,#pg{display:none!important}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-<script src="config.js"></script></head><body>
+<script src="config.js"></script><script src="cert.js"></script></head><body>
 <div id="ld"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg></div><div id="pg"></div><div id="nt" class="nt"></div>
 <header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><div class="hr"><a class="btn s" id="hb" href="#reg">سجّل حضورك</a></div></div></header><div class="w" id="cmode"></div>
 <section class="hv" id="hero"><img id="cv" class="cv" alt="" src="cover.jpg"></section>
@@ -182,26 +182,12 @@ function rt(k,n){R[k]=n;document.querySelectorAll('.sr[data-k="'+k+'"]').forEach
 function rc(v,b){R.r=v;b.parentNode.querySelectorAll('button').forEach(x=>x.className='btn g');b.className='btn'}
 async function sf(){if(!R.s)return alert('قيّم التقييم العام على الأقل');try{await db.doc('feedback/'+me.id).set({stars:R.s,content:R.c||0,org:R.o||0,rec:R.r||'',comment:$('#cm').value.trim(),ts:TS()})}catch(e){}localStorage.conf_fb=me.id;czBtn()}
 function czBtn(){$('#cz').innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#ecfdf5;text-align:center"><b>🎓 شهادتك جاهزة 🎉</b><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`}
-async function verifyMode(){document.body.classList.add('cm');const el=$('#cmode'),id=(qp.get('verify')||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
-try{const s=await db.doc('students/'+id).get();
-if(!s.exists||!s.data().checkedIn)return el.innerHTML=msg('❌','شهادة غير صالحة','الكود ده مش موجود في سجل حضور الندوة.');
-const d=s.data(),a=d.at&&d.at.toDate?d.at.toDate():null,row=(k,v)=>v?`<div style="display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px dashed var(--bd)"><span style="color:var(--mut)">${k}</span><b style="text-align:left">${v}</b></div>`:'';
-el.innerHTML=`<div class="cardx" style="text-align:center;margin-top:16px"><div style="font-size:54px">✅</div><h2 style="margin:6px 0;color:#15803d">شهادة صحيحة وموثّقة</h2><p style="color:var(--mut);margin:0 0 10px">الشخص ده سجّل حضوره فعلاً في الندوة</p><div style="text-align:right"><h3 dir="ltr" style="margin:8px 0 0;text-align:right">${esc(d.nameEn||d.name)}</h3>${row('الندوة',esc(E.title))}${row('التاريخ',D?D.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'}):'')}${row('المكان',esc(E.place||''))}${row('الكود الجامعي',esc(d.univ||''))}${row('الفرقة',esc(d.year||''))}${row('وقت تسجيل الحضور',a?a.toLocaleString('ar-EG-u-nu-latn'):'')}${row('كود الشهادة','<span dir="ltr">'+esc(id)+'</span>')}</div></div>`}catch(e){el.innerHTML=msg('⚠️','مشكلة اتصال','حاول تاني.')}}
+function verifyMode(){location.replace('verify.html?id='+encodeURIComponent((qp.get('verify')||'').toUpperCase().replace(/[^A-Z0-9]/g,'')))}
 async function certMode(){document.body.classList.add('cm');const el=$('#cmode'),id=(qp.get('cert')||'').toUpperCase().replace(/\//g,'');
 if(!C||!C.certs)return el.innerHTML=msg('🔒','الشهادات لسه ما اتفتحتش','هتتاح بعد انتهاء الندوة، جرّب تفتح اللينك تاني بعدين.');
 try{const s=await db.doc('students/'+id).get();if(!s.exists)return el.innerHTML=msg('❌','اللينك غير صحيح','اتأكد من اللينك اللي وصلك.');me={id,...s.data()};
-el.innerHTML=`<div class="cardx" style="text-align:center;margin-top:16px"><div style="font-size:46px">🎓</div><h2 dir="ltr" style="margin:6px 0">${esc(me.nameEn||me.name)}</h2><p style="color:var(--mut)">شهادة حضور ${esc(E.title)}</p><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`}catch(e){el.innerHTML=msg('⚠️','مشكلة اتصال','حاول تاني.')}}
-async function cert(t){await document.fonts.load('100px "Great Vibes"');
-const im=new Image();im.src='cert-template.jpg';await im.decode();
-const c=document.createElement('canvas');c.width=1536;c.height=1024;const x=c.getContext('2d');x.drawImage(im,0,0,1536,1024);
-x.textAlign='center';x.fillStyle='#0a2a66';let fs=76;const nm=(me.nameEn||me.name||'').trim();
-do{x.font=fs+'px "Great Vibes",cursive';fs-=3}while(x.measureText(nm).width>760&&fs>38);
-x.fillText(nm,768,446);
-const u=new URL('./?verify='+me.id,location.href).href,q=qrcode(0,'M');q.addData(u);q.make();
-const qi=new Image();qi.src=q.createDataURL(8,0);await qi.decode();
-x.fillStyle='#fff';x.beginPath();x.roundRect?x.roundRect(1366,772,150,186,14):x.rect(1366,772,150,186);x.fill();x.strokeStyle='#c9a227';x.lineWidth=3;x.stroke();
-x.imageSmoothingEnabled=false;x.drawImage(qi,1379,785,124,124);x.imageSmoothingEnabled=true;
-x.fillStyle='#0a2a66';x.font='bold 13px Arial,sans-serif';x.fillText('SCAN TO VERIFY',1441,928);x.font='13px monospace';x.fillText(me.id,1441,946);
+el.innerHTML=`<div class="cardx" style="text-align:center;margin-top:16px"><div style="font-size:46px">🎓</div><div dir="ltr" style="margin:6px 0;font:800 24px Cairo,sans-serif">${esc(me.nameEn||me.name)}</div><p style="color:var(--mut)">شهادة حضور ${esc(E.title)}</p><img id="cpv" alt="" style="width:100%;border-radius:10px;border:1px solid var(--bd);margin-top:12px;display:none"><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`;drawCertificate({name:me.name,nameEn:me.nameEn,id:me.id}).then(c=>{const im=$('#cpv');if(im){im.src=c.toDataURL('image/jpeg',.85);im.style.display='block'}}).catch(()=>{})}catch(e){el.innerHTML=msg('⚠️','مشكلة اتصال','حاول تاني.')}}
+async function cert(t){const c=await drawCertificate({name:me.name,nameEn:me.nameEn,id:me.id});
 if(t=='png'){const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='certificate-'+me.id+'.png';a.click()}
 else{const p=new window.jspdf.jsPDF({orientation:'l',unit:'mm',format:[297,198]});p.addImage(c.toDataURL('image/jpeg',.93),'JPEG',0,0,297,198);p.save('certificate-'+me.id+'.pdf')}}
 function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;z-index:98;pointer-events:none';c.width=innerWidth;c.height=innerHeight;document.body.appendChild(c);const x=c.getContext('2d'),P=Array.from({length:150},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,r:4+Math.random()*6,vx:Math.random()*4-2,vy:2+Math.random()*4,c:['#0d9488','#38bdf8','#fde047','#fb7185','#34d399'][Math.floor(Math.random()*5)]}));let f=0;(function a(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.r,p.r*1.6)});if(++f<180)requestAnimationFrame(a);else c.remove()})()}
