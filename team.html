@@ -35,12 +35,12 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:url(bg.jpg) 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="lib/qrcode.js"></script>
 <script src="config.js"></script></head><body><div class="w"><h1>🛡️ تيم الأورجنايزر</h1><p class="sub" id="t"></p><div id="app"></div></div>
 <script>
 firebase.initializeApp(FB);const app2=firebase.initializeApp(FB,'org'),db2=app2.firestore(),auth2=app2.auth(),db=firebase.firestore(),$=s=>document.querySelector(s),LS='org_card';$('#t').textContent=EVENT.title;
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let me=JSON.parse(localStorage.getItem(LS)||'null'),photo='',QR=null,OA=false,CFG={},UID=null,ORG=[],CHAT=[],DMS=[],MY={},tabS='t',peer='';
+let me=JSON.parse(localStorage.getItem(LS)||'null'),photo='',QR=(()=>{try{return localStorage.org_qr!=='0'}catch(e){return true}})(),OA=false,CFG={},UID=null,ORG=[],CHAT=[],DMS=[],MY={},tabS='t',peer='';
 const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>'O'+Array.from(crypto.getRandomValues(new Uint8Array(7)),b=>AL[b%31]).join('');
 function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
 function form(){$('#app').innerHTML=`<div class="c"><h3 style="margin:0 0 12px;text-align:center">تسجيل عضو في التيم</h3><label class="up"><input type="file" id="f" accept="image/*" hidden><span id="pv">📷<br>صورتك<br><small>(اختياري)</small></span></label>
@@ -110,5 +110,5 @@ $('#sbd').innerHTML='<p style="margin:0 0 8px;color:var(--mut)">قيّم زما�
 async function rate(to,n){const old=MY[to];MY[to]=n;dR();try{await db2.doc('ratings/'+me.id+'_'+to).set({from:me.id,to,stars:n,uid:UID,ts:TS2()})}catch(e){MY[to]=old;dR();alert('مقدرتش أحفظ التقييم')}}
 function tg(){const b=$('#tbd'),o=b.style.display=='none';b.style.display=o?'':'none';$('#chv').textContent=o?'▲':'▼';try{localStorage.org_open=o?'1':'0'}catch(e){}}
 function ap(){document.querySelectorAll('.qb').forEach(e=>e.style.display=QR===true?'':'none');document.querySelectorAll('.qh').forEach(e=>e.style.display=QR===false?'block':'none')}
-db.doc('config/main').onSnapshot(s=>{CFG=s.data()||{};QR=CFG.orgQr!==false;ap();socR()},()=>{QR=true;ap()});
+db.doc('config/main').onSnapshot(s=>{CFG=s.data()||{};QR=CFG.orgQr!==false;try{localStorage.org_qr=QR?'1':'0'}catch(e){}ap();socR()},()=>{QR=true;ap()});
 </script></body></html>
