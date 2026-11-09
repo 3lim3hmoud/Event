@@ -6,7 +6,7 @@ window.ORG_CERTS={
  byId:{
   OHZSFEP8:{n:"Abdallah Abotaleb",u:""},
   OJ8YAGA5:{n:"Zakaria Ismail",u:""},
-  OZKS98EA:{n:"Dalia Hamed",u:"2506153"},
+  OZKS98EA:{n:"Dalia Hamdy",u:"2506153"},
   OSKXAED3:{n:"Amira Al-Ammawi",u:"2506226"},
   OQEGPSF9:{n:"Malak Azek",u:"2606400"},
   ODD5KRXS:{n:"Muhamed Zaki",u:""},
