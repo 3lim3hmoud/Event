@@ -111,7 +111,7 @@ header,#pg{display:none!important}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-<script src="config.js"></script></head><body>
+<script src="config.js"></script><script src="org-certs.js"></script><script src="certlib.js"></script></head><body>
 <div id="ld"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg></div><div id="pg"></div><div id="nt" class="nt"></div>
 <header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><div class="hr"><a class="btn s" id="hb" href="#reg">سجّل حضورك</a></div></div></header><div class="w" id="cmode"></div>
 <section class="hv" id="hero"><img id="cv" class="cv" alt="" src="cover.jpg"></section>
@@ -140,7 +140,7 @@ const msg=(i,t,p)=>`<div class="cardx" style="text-align:center"><div style="fon
 db.doc('config/main').onSnapshot(s=>{C=s.data()||{};$('#nt').style.display=C.notice?'block':'none';$('#nt').textContent=C.notice?'📢 '+C.notice:'';const st=C.state||'before',n=C.count||0;
 $('#bar').style.width=C.limit?Math.min(100,n/C.limit*100)+'%':(st=='live'?'100%':'0%');
 $('#left').textContent=st=='live'?`🟢 الندوة جارية الآن • ${n} حاضر`:st=='ended'?'🏁 انتهت الندوة • شكراً لحضوركم':'⏳ الندوة لسه ما بدأتش';
-$('#hb').textContent=me?'حضوري':'سجّل حضورك';if(qp.get('verify'))verifyMode();else if(qp.get('cert'))certMode();else view()},()=>qp.get('verify')?verifyMode():qp.get('cert')?certMode():view());
+$('#hb').textContent=me?'حضوري':'سجّل حضورك';if(qp.get('verify'))verifyMode();else if(qp.get('ocert'))ocertMode();else if(qp.get('cert'))certMode();else view()},()=>qp.get('verify')?verifyMode():qp.get('ocert')?ocertMode():qp.get('cert')?certMode():view());
 function view(){if(ed)return;const st=(C&&C.state)||'before',full=C&&C.limit&&C.count>=C.limit,k=me?'m'+(C&&C.certs):st+full;if(k==lk&&$('#rg').innerHTML)return;lk=k;
 if(me)return card();
 if(st=='before')return $('#rg').innerHTML=msg('⏳','الندوة لسه ما بدأتش','التسجيل بيتفتح أول ما المنظم يعلن بداية الندوة. افتح اللينك تاني وقتها.');
@@ -183,10 +183,24 @@ function rc(v,b){R.r=v;b.parentNode.querySelectorAll('button').forEach(x=>x.clas
 async function sf(){if(!R.s)return alert('قيّم التقييم العام على الأقل');try{await db.doc('feedback/'+me.id).set({stars:R.s,content:R.c||0,org:R.o||0,rec:R.r||'',comment:$('#cm').value.trim(),ts:TS()})}catch(e){}localStorage.conf_fb=me.id;czBtn()}
 function czBtn(){$('#cz').innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#ecfdf5;text-align:center"><b>🎓 شهادتك جاهزة 🎉</b><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`}
 async function verifyMode(){document.body.classList.add('cm');const el=$('#cmode'),id=(qp.get('verify')||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+if(window.ORG_CERTS&&Object.prototype.hasOwnProperty.call(ORG_CERTS.byId,id))return orgVerify(id,ORG_CERTS.byId[id]);
 try{const s=await db.doc('students/'+id).get();
 if(!s.exists||!s.data().checkedIn)return el.innerHTML=msg('❌','شهادة غير صالحة','الكود ده مش موجود في سجل حضور الندوة.');
 const d=s.data(),a=d.at&&d.at.toDate?d.at.toDate():null,row=(k,v)=>v?`<div style="display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px dashed var(--bd)"><span style="color:var(--mut)">${k}</span><b style="text-align:left">${v}</b></div>`:'';
 el.innerHTML=`<div class="cardx" style="text-align:center;margin-top:16px"><div style="font-size:54px">✅</div><h2 style="margin:6px 0;color:#15803d">شهادة صحيحة وموثّقة</h2><p style="color:var(--mut);margin:0 0 10px">الشخص ده سجّل حضوره فعلاً في الندوة</p><div style="text-align:right"><h3 dir="ltr" style="margin:8px 0 0;text-align:right">${esc(d.nameEn||d.name)}</h3>${row('الندوة',esc(E.title))}${row('التاريخ',D?D.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'}):'')}${row('المكان',esc(E.place||''))}${row('الكود الجامعي',esc(d.univ||''))}${row('الفرقة',esc(d.year||''))}${row('وقت تسجيل الحضور',a?a.toLocaleString('ar-EG-u-nu-latn'):'')}${row('كود الشهادة','<span dir="ltr">'+esc(id)+'</span>')}</div></div>`}catch(e){el.innerHTML=msg('⚠️','مشكلة اتصال','حاول تاني.')}}
+async function orgVerify(id,R){const el=$('#cmode'),fd=(d,o)=>d.toLocaleDateString('ar-EG-u-nu-latn',o),row=(k,v)=>v?`<div style="display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px dashed var(--bd)"><span style="color:var(--mut)">${k}</span><b style="text-align:left">${v}</b></div>`:'';
+let ar='',at='';try{const o=await db.doc('organizers/'+id).get();if(o.exists){const d=o.data();ar=d.name||'';at=d.checkedIn&&d.at&&d.at.toDate?d.at.toDate().toLocaleString('ar-EG-u-nu-latn'):''}}catch(e){}
+const iss=ORG_CERTS.issued?fd(new Date(ORG_CERTS.issued+'T12:00:00'),{day:'numeric',month:'long',year:'numeric'}):'';
+el.innerHTML=`<div class="cardx" style="text-align:center;margin-top:16px"><div style="font-size:54px">✅</div><h2 style="margin:6px 0;color:#15803d">شهادة تقدير صحيحة وموثّقة</h2><p style="color:var(--mut);margin:0 0 10px">الشهادة دي صادرة فعلاً لعضو في فريق تنظيم الندوة</p><div style="text-align:right"><h3 dir="ltr" style="margin:8px 0 0;text-align:right">${esc(R.n)}</h3>${row('الاسم بالعربي',esc(ar))}${row('نوع الشهادة','شهادة تقدير')}${row('الصفة',R.k=='presenter'?'عضو فريق التنظيم • مقدّمة (Presenter)':'عضو فريق التنظيم')}${row('سبب التقدير',esc(R.why||''))}${row('الندوة',esc(E.title))}${row('التاريخ',D?fd(D,{day:'numeric',month:'long',year:'numeric'}):'')}${row('المكان',esc(E.place||''))}${row('الكود الجامعي',esc(R.u||''))}${row('وقت تسجيل الحضور',at)}${row('الجهة المُصدِرة',esc(E.organizer||''))}${row('تاريخ الإصدار',iss)}${row('كود الشهادة','<span dir="ltr">'+esc(id)+'</span>')}</div></div>`}
+let OCV=null;
+async function ocertMode(){document.body.classList.add('cm');const el=$('#cmode'),id=(qp.get('ocert')||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+if(!(window.ORG_CERTS&&Object.prototype.hasOwnProperty.call(ORG_CERTS.byId,id)))return el.innerHTML=msg('❌','اللينك غير صحيح','اتأكد من اللينك اللي وصلك.');
+const R=ORG_CERTS.byId[id];
+el.innerHTML=`<div class="cardx" style="text-align:center;margin-top:16px"><div style="font-size:46px">🏅</div><h2 dir="ltr" style="margin:6px 0">${esc(R.n)}</h2><p style="color:var(--mut)">شهادة تقدير – ${esc(E.title)}</p><img id="ocp" alt="" style="width:100%;border-radius:12px;border:1px solid var(--bd);display:none"><div id="ocl" style="padding:14px;color:var(--mut)">⏳ بجهّز شهادتك…</div><div class="row" style="padding:10px 0 0"><button class="btn" onclick="ocert('pdf')">تحميل PDF</button><button class="btn g" onclick="ocert('png')">صورة PNG</button></div></div>`;
+try{OCV=await CertLib.drawOrg(id,{base:'',site:new URL('./',location.href).href});$('#ocp').src=OCV.toDataURL('image/jpeg',.8);$('#ocp').style.display='block';$('#ocl').remove()}catch(e){$('#ocl').textContent='⚠️ حصلت مشكلة في تجهيز الشهادة، حاول تاني'}}
+async function ocert(t){const id=(qp.get('ocert')||'').toUpperCase().replace(/[^A-Z0-9]/g,'');if(!OCV)OCV=await CertLib.drawOrg(id,{base:'',site:new URL('./',location.href).href});
+if(t=='png'){const a=document.createElement('a');a.href=OCV.toDataURL('image/png');a.download='appreciation-'+id+'.png';a.click()}
+else{const p=new window.jspdf.jsPDF({orientation:'l',unit:'mm',format:[297,198]});p.addImage(OCV.toDataURL('image/jpeg',.93),'JPEG',0,0,297,198);p.save('appreciation-'+id+'.pdf')}}
 async function certMode(){document.body.classList.add('cm');const el=$('#cmode'),id=(qp.get('cert')||'').toUpperCase().replace(/\//g,'');
 if(!C||!C.certs)return el.innerHTML=msg('🔒','الشهادات لسه ما اتفتحتش','هتتاح بعد انتهاء الندوة، جرّب تفتح اللينك تاني بعدين.');
 try{const s=await db.doc('students/'+id).get();if(!s.exists)return el.innerHTML=msg('❌','اللينك غير صحيح','اتأكد من اللينك اللي وصلك.');me={id,...s.data()};
