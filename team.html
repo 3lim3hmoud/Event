@@ -22,15 +22,22 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:url(bg.jpg) 
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.kb{background:#f0fdfa;border:1px dashed var(--p);border-radius:14px;padding:2px 12px 12px;margin-top:14px}
 @media(max-width:400px){.g2{grid-template-columns:1fr}}
 .tk{background:linear-gradient(160deg,#0b3b3cb8,#0d9488a8)!important;backdrop-filter:blur(3px)}.tk .ob{user-select:none}
+.tabs2{display:flex;gap:6px;margin:8px 0}.tabs2 button{flex:1;padding:10px;border-radius:12px;border:1px solid var(--bd);background:#fff;font:700 14px Cairo,sans-serif;color:var(--ink);cursor:pointer}.tabs2 button.on{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border:0}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dc{border:1px solid var(--bd);border-radius:14px;padding:10px;text-align:center;background:#fff}.dc img,.dc .di,.pp{width:56px;height:56px;border-radius:50%;object-fit:cover;display:grid;place-items:center;margin:0 auto 4px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-size:22px}.dc b{display:block;font-size:14px}.dc small{color:var(--mut)}.dc button{margin-top:6px;padding:6px;font-size:13px;border-radius:10px;border:1px solid var(--bd);background:#fff;color:var(--p);cursor:pointer;width:100%}
+#msgs{height:260px;overflow-y:auto;background:#f8fdfd;border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px}.mg{max-width:80%;align-self:flex-start;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:6px 10px;word-break:break-word}.mg.me{align-self:flex-end;background:#d1fae5}.mg small{color:var(--mut);display:block}.row2{display:flex;gap:6px;margin-top:8px}.row2 input{flex:1}
+.rt{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--bd)}.st5 i{font-style:normal;font-size:24px;color:#f59e0b;cursor:pointer;padding:0 2px}
+.wnr{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:14px;padding:10px;text-align:center;font-weight:800;margin-bottom:8px;color:#78350f}.wnr span{display:inline-block;background:#fff;border-radius:99px;padding:3px 12px;margin:4px 3px 0;font-weight:700}
+.md{position:fixed;inset:0;background:#0008;display:grid;place-items:center;padding:16px;z-index:60}.md .c{max-width:360px;width:100%}.md .pp{width:96px;height:96px;font-size:38px}.btn2{display:inline-block;margin:8px 0;padding:8px 16px;border-radius:12px;background:#16a34a;color:#fff;text-decoration:none;font-weight:700}.rl2{display:inline-block;background:#ccfbf1;border-radius:99px;padding:2px 12px;margin-top:6px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="config.js"></script></head><body><div class="w"><h1>🛡️ تيم الأورجنايزر</h1><p class="sub" id="t"></p><div id="app"></div></div>
 <script>
 firebase.initializeApp(FB);const db=firebase.firestore(),$=s=>document.querySelector(s),LS='org_card';$('#t').textContent=EVENT.title;
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let me=JSON.parse(localStorage.getItem(LS)||'null'),photo='',QR=null,OA=false;
+let me=JSON.parse(localStorage.getItem(LS)||'null'),photo='',QR=null,OA=false,CFG={},UID=null,ORG=[],CHAT=[],DMS=[],MY={},tabS='t',peer='';
 const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',gen=()=>'O'+Array.from(crypto.getRandomValues(new Uint8Array(7)),b=>AL[b%31]).join('');
 function rs(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas'),m=Math.min(i.width,i.height);c.width=c.height=240;c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,240,240);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)})}
 function form(){$('#app').innerHTML=`<div class="c"><h3 style="margin:0 0 12px;text-align:center">تسجيل عضو في التيم</h3><label class="up"><input type="file" id="f" accept="image/*" hidden><span id="pv">📷<br>صورتك<br><small>(اختياري)</small></span></label>
@@ -43,10 +50,44 @@ async function save(){const d={name:$('#n').value.trim(),nameEn:$('#e').value.tr
 if(!d.name||!d.univ||!d.phone||!d.code)return err('كمّل الاسم والكود الجامعي والموبايل وكود التيم');
 const id=gen();try{await db.doc('organizers/'+id).set({...d,ts:firebase.firestore.FieldValue.serverTimestamp()});delete d.code;me={id,...d};localStorage.setItem(LS,JSON.stringify(me));tkt()}catch(x){err('كود التيم غلط أو حصل خطأ في الاتصال')}}
 function tkt(){if(!window.osub){window.osub=1;db.doc('organizers/'+me.id).onSnapshot(s=>{OA=!!(s.data()||{}).checkedIn;ast()},()=>{})}const q=qrcode(0,'M');q.addData(me.id);q.make();
-$('#app').innerHTML=`<div class="tk"><div class="ob" onclick="tg()" style="cursor:pointer">ORGANIZER <span id="chv" style="font-size:13px">▲</span></div><div id="tbd">${me.photo?`<img class="ph" src="${me.photo}" alt="">`:`<div class="ph" style="display:grid;place-items:center;margin:20px auto 0;background:#ffffff26;font-size:40px;font-weight:800">${esc((me.name||"؟")[0])}</div>`}<h2>${esc(me.name)}</h2><div dir="ltr" style="opacity:.8">${esc(me.nameEn)}</div>${me.univ?`<div style="opacity:.8;font-size:14px">كود جامعي: ${esc(me.univ)}</div>`:''}<div class="rl">🛡️ ${esc(me.role)}</div><div id="ast" class="rl" style="display:none;background:#16a34a;margin-inline-start:6px">✅ تم تأكيد حضورك</div><div style="opacity:.8;font-size:14px">${esc(EVENT.title)}</div><br><div class="qb" style="display:none"><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div></div><div class="qh" style="display:none;padding:26px 16px 30px;opacity:.85">🔒 الـ QR مخفي حالياً من الإدارة</div></div></div><p class="sub" style="margin-top:14px">تذكرتك محفوظة على الموبايل. للتعديل كلّم الأدمن.</p>`;ap();ast();if(localStorage.org_open=='0'){$('#tbd').style.display='none';$('#chv').textContent='▼'}}
+$('#app').innerHTML=`<div class="tk"><div class="ob" onclick="tg()" style="cursor:pointer">ORGANIZER <span id="chv" style="font-size:13px">▲</span></div><div id="tbd">${me.photo?`<img class="ph" src="${me.photo}" alt="">`:`<div class="ph" style="display:grid;place-items:center;margin:20px auto 0;background:#ffffff26;font-size:40px;font-weight:800">${esc((me.name||"؟")[0])}</div>`}<h2>${esc(me.name)}</h2><div dir="ltr" style="opacity:.8">${esc(me.nameEn)}</div>${me.univ?`<div style="opacity:.8;font-size:14px">كود جامعي: ${esc(me.univ)}</div>`:''}<div class="rl">🛡️ ${esc(me.role)}</div><div id="ast" class="rl" style="display:none;background:#16a34a;margin-inline-start:6px">✅ تم تأكيد حضورك</div><div style="opacity:.8;font-size:14px">${esc(EVENT.title)}</div><br><div class="qb" style="display:none"><img class="qr" src="${q.createDataURL(6)}" alt="QR"><div class="code">${me.id}</div></div><div class="qh" style="display:none;padding:26px 16px 30px;opacity:.85">🔒 الـ QR مخفي حالياً من الإدارة</div></div></div><p class="sub" style="margin-top:14px">تذكرتك محفوظة على الموبايل. للتعديل كلّم الأدمن.</p>`;$('#app').insertAdjacentHTML('beforeend','<div id="soc"></div>');ap();ast();soc();if(localStorage.org_open=='0'){$('#tbd').style.display='none';$('#chv').textContent='▼'}}
 if(me)tkt();else form();
 function ast(){const e=$('#ast');if(e)e.style.display=OA?'inline-block':'none'}
+const wn=p=>{let n=String(p||'').replace(/\D/g,'');if(n[0]=='0')n='2'+n;return n},nm=id=>(ORG.find(o=>o.id==id)||{}).name||'؟',TS2=()=>firebase.firestore.FieldValue.serverTimestamp();
+async function soc(){const el=$('#soc');if(!el)return;
+if(!UID){el.innerHTML='<div class="c" style="margin-top:12px;text-align:center">⏳ جاري تجهيز مساحة التيم...</div>';
+try{const a=firebase.auth();await a.signInAnonymously();UID=a.currentUser.uid;await lnk();subs()}catch(e){UID=null;const x=$('#soc');if(x)x.innerHTML='';return}}
+socR()}
+async function lnk(){const od=db.doc('organizers/'+me.id),s=await od.get();if(!s.exists)throw 1;const u=s.data().uid;if(!u)await od.update({uid:UID});else if(u!==UID)throw 2;const oa=db.doc('orgAuth/'+UID),g=await oa.get();if(!g.exists)await oa.set({oid:me.id})}
+function subs(){if(window.sb)return;window.sb=1;const L=s=>s.docs.map(d=>({id:d.id,...d.data()})),N=()=>{};
+db.collection('organizers').onSnapshot(s=>{ORG=L(s);socR()},N);
+db.collection('chat').orderBy('ts','desc').limit(100).onSnapshot(s=>{CHAT=L(s).reverse();socR()},N);
+db.collection('dms').where('members','array-contains',UID).onSnapshot(s=>{DMS=L(s).sort((a,b)=>(a.ts&&a.ts.seconds||9e9)-(b.ts&&b.ts.seconds||9e9));socR()},N);
+db.collection('ratings').where('uid','==',UID).onSnapshot(s=>{MY={};s.docs.forEach(d=>MY[d.data().to]=d.data().stars);socR()},N)}
+function win(){const w=CFG.winners||[];if(!w.length)return'';return `<div class="wnr">${w.some(x=>x.id==me.id)?'🎉 مبروك! إنت من الفايزين بالمكافأة':'🏆 الفائزون بالمكافأة'}<div>${w.map(x=>`<span>${esc(x.name)}</span>`).join('')}</div></div>`}
+function socR(){const el=$('#soc');if(!el||!UID)return;
+if(!$('#st'))el.innerHTML='<div class="c" style="margin-top:12px;padding:12px"><div id="wn"></div><div class="tabs2" id="st"></div><div id="sbd"></div></div>';
+$('#wn').innerHTML=win();
+$('#st').innerHTML=[['t','👥 التيم'],['c','💬 الشات'],['r','⭐ التقييم']].map(([k,l])=>`<button class="${tabS==k?'on':''}" onclick="stab('${k}')">${l}</button>`).join('');
+if(tabS=='t')dT();else if(tabS=='c')dC();else dR()}
+function stab(k){tabS=k;socR()}
+function dm(id){peer=id;stab('c')}
+function dT(){$('#sbd').innerHTML=ORG.length?'<div class="dg">'+ORG.map(o=>`<div class="dc"><div onclick="prf('${o.id}')">${o.photo?`<img src="${o.photo}" alt="">`:`<b class="di">${esc((o.name||'؟')[0])}</b>`}<b>${esc(o.name)}${o.id==me.id?' (أنت)':''}</b><small>${esc(o.role||'تنظيم')}${o.checkedIn?' • ✅':''}</small></div>${o.id!=me.id&&o.uid?`<button onclick="dm('${o.id}')">💬 رسالة</button>`:''}</div>`).join('')+'</div>':'<p style="text-align:center;color:var(--mut)">لسه مفيش أورجنايزر</p>'}
+function prf(id){const o=ORG.find(x=>x.id==id);if(!o)return;const m=document.createElement('div');m.className='md';m.onclick=e=>{if(e.target==m)m.remove()};
+m.innerHTML=`<div class="c" style="text-align:center">${o.photo?`<img class="pp" src="${o.photo}" alt="">`:`<b class="pp">${esc((o.name||'؟')[0])}</b>`}<h3 style="margin:10px 0 2px">${esc(o.name)}</h3><div dir="ltr" style="color:var(--mut)">${esc(o.nameEn||'')}</div><div class="rl2">🛡️ ${esc(o.role||'تنظيم')}</div><p>🎓 كود جامعي: ${esc(o.univ||'-')}</p><p>${o.checkedIn?'✅ حضوره متأكد':'⏳ حضوره لسه ما اتأكدش'}</p>${o.phone?`<a class="btn2" href="https://wa.me/${wn(o.phone)}" target="_blank" rel="noopener">📞 ${esc(o.phone)}</a>`:''}${o.id!=me.id&&o.uid?`<button class="btn" onclick="this.closest('.md').remove();dm('${o.id}')">💬 ابعتله رسالة</button>`:''}<button class="btn" style="background:#e2e8f0;color:#0f172a" onclick="this.closest('.md').remove()">إغلاق</button></div>`;document.body.appendChild(m)}
+function dC(){const op='<option value="">🌐 الشات العام</option>'+ORG.filter(o=>o.id!=me.id&&o.uid).map(o=>`<option value="${o.id}">🔒 ${esc(o.name)}</option>`).join('');
+if(!$('#msgs'))$('#sbd').innerHTML='<select id="ct" onchange="peer=this.value;dC()" style="margin-bottom:8px"></select><div id="msgs"></div><div class="row2"><input id="mi" placeholder="اكتب رسالتك..." maxlength="500" onkeydown="if(event.key==\'Enter\')sm()"><button class="btn" style="width:auto;margin:0;padding:10px 18px" onclick="sm()">إرسال</button></div><small id="ctn" style="color:var(--mut)"></small>';
+const s=$('#ct');if(s.dataset.o!=op){s.innerHTML=op;s.dataset.o=op}s.value=peer;
+$('#ctn').textContent=peer?'🔒 رسالة خاصة بينكم انتو الاتنين':'🌐 شات عام لكل الأورجنايزر';
+const L=peer?DMS.filter(m=>(m.oid==peer&&m.to==me.id)||(m.oid==me.id&&m.to==peer)):CHAT,e=$('#msgs');
+e.innerHTML=L.length?L.map(m=>`<div class="mg${m.oid==me.id?' me':''}"><small>${m.oid==me.id?'أنت':esc(nm(m.oid))}</small><div>${esc(m.text)}</div></div>`).join(''):'<small style="color:var(--mut)">لسه مفيش رسائل</small>';e.scrollTop=e.scrollHeight}
+async function sm(){const i=$('#mi'),t=i.value.trim();if(!t)return;if(Date.now()-(+localStorage.ml||0)<1500)return;if(CFG.chatOpen===false)return alert('الشات مقفول دلوقتي');
+const d={oid:me.id,uid:UID,text:t,ts:TS2()};
+try{if(peer){const o=ORG.find(x=>x.id==peer);d.to=peer;d.members=[UID,o.uid];await db.collection('dms').add(d)}else await db.collection('chat').add(d);localStorage.ml=Date.now();i.value=''}catch(e){alert('مقدرتش أبعت الرسالة')}}
+function dR(){if(!CFG.rateOpen){$('#sbd').innerHTML='<p style="text-align:center;color:var(--mut)">🔒 التقييم لسه ما اتفتحش. هيتفتح في آخر الندوة.</p>';return}
+$('#sbd').innerHTML='<p style="margin:0 0 8px;color:var(--mut)">قيّم زمايلك من 1 لـ 5 ⭐ (التقييم سري)</p>'+ORG.filter(o=>o.id!=me.id).map(o=>`<div class="rt"><span>${esc(o.name)}<small style="color:var(--mut)"> ${esc(o.role||'')}</small></span><span class="st5" dir="ltr">${[1,2,3,4,5].map(i=>`<i onclick="rate('${o.id}',${i})">${(MY[o.id]||0)>=i?'★':'☆'}</i>`).join('')}</span></div>`).join('')}
+async function rate(to,n){const old=MY[to];MY[to]=n;dR();try{await db.doc('ratings/'+me.id+'_'+to).set({from:me.id,to,stars:n,uid:UID,ts:TS2()})}catch(e){MY[to]=old;dR();alert('مقدرتش أحفظ التقييم')}}
 function tg(){const b=$('#tbd'),o=b.style.display=='none';b.style.display=o?'':'none';$('#chv').textContent=o?'▲':'▼';try{localStorage.org_open=o?'1':'0'}catch(e){}}
 function ap(){document.querySelectorAll('.qb').forEach(e=>e.style.display=QR===true?'':'none');document.querySelectorAll('.qh').forEach(e=>e.style.display=QR===false?'block':'none')}
-db.doc('config/main').onSnapshot(s=>{QR=(s.data()||{}).orgQr!==false;ap()},()=>{QR=true;ap()});
+db.doc('config/main').onSnapshot(s=>{CFG=s.data()||{};QR=CFG.orgQr!==false;ap();socR()},()=>{QR=true;ap()});
 </script></body></html>

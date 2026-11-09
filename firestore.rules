@@ -1,7 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
  match /databases/{db}/documents {
-  function admin(){return request.auth!=null;}
+  function admin(){return request.auth!=null && request.auth.token.firebase.sign_in_provider!='anonymous';}
+  function isOrg(){return request.auth!=null && exists(/databases/$(db)/documents/orgAuth/$(request.auth.uid));}
+  function cfg(){return get(/databases/$(db)/documents/config/main).data;}
+  function myOid(){return get(/databases/$(db)/documents/orgAuth/$(request.auth.uid)).data.oid;}
+  function okText(){return request.resource.data.text is string && request.resource.data.text.size()>0 && request.resource.data.text.size()<=500;}
+
   match /config/main {
    allow get: if true;
    allow write: if admin();
@@ -17,8 +22,45 @@ service cloud.firestore {
   }
   match /organizers/{id} {
    allow get: if true;
-   allow list, update, delete: if admin();
-   allow create: if request.resource.data.code==get(/databases/$(db)/documents/secret/team).data.code;
+   allow list: if admin() || isOrg();
+   allow delete: if admin();
+   allow update: if admin() || (request.auth!=null && !('uid' in resource.data)
+     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['uid'])
+     && request.resource.data.uid==request.auth.uid);
+   allow create: if request.resource.data.code==get(/databases/$(db)/documents/secret/team).data.code
+     && (!('uid' in request.resource.data) || request.resource.data.uid==request.auth.uid);
+  }
+  match /orgAuth/{u} {
+   allow get: if request.auth!=null && (request.auth.uid==u || admin());
+   allow create: if request.auth!=null && request.auth.uid==u
+     && request.resource.data.keys().hasOnly(['oid'])
+     && get(/databases/$(db)/documents/organizers/$(request.resource.data.oid)).data.uid==u;
+   allow delete: if admin();
+  }
+  match /chat/{m} {
+   allow read: if isOrg() || admin();
+   allow create: if isOrg() && cfg().get('chatOpen',true)!=false
+     && request.resource.data.keys().hasOnly(['oid','uid','text','ts'])
+     && request.resource.data.uid==request.auth.uid && request.resource.data.oid==myOid() && okText();
+   allow delete: if admin();
+  }
+  match /dms/{m} {
+   allow read: if request.auth!=null && request.auth.uid in resource.data.members;
+   allow create: if isOrg() && cfg().get('chatOpen',true)!=false
+     && request.resource.data.keys().hasOnly(['oid','uid','to','members','text','ts'])
+     && request.resource.data.uid==request.auth.uid && request.resource.data.oid==myOid()
+     && request.resource.data.members.size()==2 && request.auth.uid in request.resource.data.members && okText();
+   allow delete: if admin();
+  }
+  match /ratings/{r} {
+   allow read: if admin() || (request.auth!=null && resource.data.uid==request.auth.uid);
+   allow create, update: if isOrg() && cfg().get('rateOpen',false)==true
+     && request.resource.data.keys().hasOnly(['from','to','stars','uid','ts'])
+     && request.resource.data.uid==request.auth.uid && request.resource.data.from==myOid()
+     && request.resource.data.from!=request.resource.data.to
+     && request.resource.data.stars in [1,2,3,4,5]
+     && r==request.resource.data.from+'_'+request.resource.data.to;
+   allow delete: if admin();
   }
   match /secret/{d} { allow read, write: if admin(); }
   match /questions/{q} {
