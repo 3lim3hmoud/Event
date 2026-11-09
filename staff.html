@@ -48,8 +48,8 @@ firebase.initializeApp(FB);const db=firebase.firestore(),auth=firebase.auth(),$=
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let cfg={},stu=[],org=[],qs=[];
 async function login(){try{await auth.signInWithEmailAndPassword($('#em').value,$('#pw').value)}catch(e){alert('بيانات غلط')}}
-auth.onAuthStateChanged(u=>{$('#lg').classList.toggle('hide',!!u);$('#mn').classList.toggle('hide',!u);if(u)start()});
-let started=0;
+auth.onAuthStateChanged(u=>{if(u&&u.isAnonymous){auth.signOut();return}$('#lg').classList.toggle('hide',!!u);$('#mn').classList.toggle('hide',!u);if(u)start()});
+let started=0;window.addEventListener('unhandledrejection',e=>{if(e.reason&&e.reason.code=='permission-denied')alert('⛔ الصلاحية مرفوضة. سجّل خروج وادخل تاني بحساب الأدمن (إيميل وباسورد).')});
 function start(){if(started)return;started=1;
 db.doc('config/main').onSnapshot(s=>{if(!s.exists){db.doc('config/main').set({state:'before',certs:false,limit:0,count:0,notice:''});return}cfg=s.data();if(!cfg.state)db.doc('config/main').update({state:'before',certs:false});drawEv()});
 db.collection('students').orderBy('ts').onSnapshot(s=>{stu=s.docs.map(d=>({id:d.id,...d.data()}));drawS();drawSend();bsr()});
