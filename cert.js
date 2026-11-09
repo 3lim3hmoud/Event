@@ -14,8 +14,8 @@ window.CERT_CFG = {
   dean: 'Prof. Dr. Naglaa Abdel Mawgood',
   deanTitle: 'Dean of the Faculty of Nursing',
   abbr: 'RST',
-  logoL: 'logo-uni.png',
-  logoR: 'logo-fac.png'
+  logoL: 'logo-fac.png',    // كلية التمريض (يسار)
+  logoR: 'logo-union.png'   // اتحاد طلاب كلية التمريض (يمين)
 };
 
 window.drawCertificate = async function (d) {
@@ -28,7 +28,7 @@ window.drawCertificate = async function (d) {
   const loads = [
     ['400 100px "Great Vibes"', 'Aa'], ['700 40px Cinzel', 'Aa'], ['500 20px Cinzel', 'Aa'],
     ['italic 400 24px "Playfair Display"', 'Aa'], ['700 40px "Playfair Display"', 'Aa'],
-    ['400 20px "Playfair Display"', 'Aa'], ['800 30px Cairo', 'ع'], ['600 20px Cairo', 'ع']
+    ['400 20px "Playfair Display"', 'Aa'], ['800 30px Cairo', 'ع'], ['600 20px Cairo', 'ع'], ['700 24px Cairo', 'Aa 0123']
   ];
   try { await Promise.all(loads.map(l => document.fonts.load(l[0], l[1]))); } catch (e) {}
 
@@ -77,12 +77,14 @@ window.drawCertificate = async function (d) {
   line(58, 164, W - 58, 164, GOLD, 4); line(58, 172, W - 58, 172, GOLD_L, 1.2);
 
   const logos = await Promise.all([loadImg(cfg.logoL), loadImg(cfg.logoR)]);
-  [[150, logos[0]], [W - 150, logos[1]]].forEach(([cx, im]) => {
+  const PL = 158, PY = 76, PX = 82; // مربع اللوجو
+  [[PX, logos[0]], [W - PX - PL, logos[1]]].forEach(([px, im]) => {
     if (!im) return;
-    x.save(); x.beginPath(); x.arc(cx, 111, 44, 0, Math.PI * 2); x.fillStyle = '#fff'; x.fill();
-    x.lineWidth = 3; x.strokeStyle = GOLD_L; x.stroke(); x.clip();
-    const r = Math.min(80 / im.width, 80 / im.height); x.drawImage(im, cx - im.width * r / 2, 111 - im.height * r / 2, im.width * r, im.height * r);
-    x.restore();
+    const plate = () => { x.beginPath(); x.roundRect ? x.roundRect(px, PY, PL, PL, 20) : x.rect(px, PY, PL, PL); };
+    x.save(); x.shadowColor = 'rgba(11,42,95,.28)'; x.shadowBlur = 16; x.shadowOffsetY = 5; plate(); x.fillStyle = '#fff'; x.fill(); x.restore();
+    plate(); x.lineWidth = 3; x.strokeStyle = GOLD; x.stroke();
+    const pad = 12, k = Math.min((PL - 2 * pad) / im.width, (PL - 2 * pad) / im.height), w = im.width * k, h = im.height * k;
+    x.drawImage(im, px + (PL - w) / 2, PY + (PL - h) / 2, w, h);
   });
 
   fit(cfg.uni, s => `700 ${s}px Cinzel`, 1000, 36, 24);
