@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0ea5a4"><title>تسجيل المؤتمر</title>
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0ea5a4"><title>تسجيل الندوة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 :root{--p:#0d9488;--p2:#38bdf8;--bg:#f0fbfb;--ink:#0b3b3c;--mut:#5b7f80;--bd:#d3ecec;--ok:#16a34a}
@@ -110,6 +110,7 @@ header,#pg{display:none!important}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="config.js"></script></head><body>
 <div id="ld"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg></div><div id="pg"></div><div id="nt" class="nt"></div>
 <header><div class="w"><div class="lg"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="currentColor"/></svg><span id="hn"></span></div><div class="hr"><a class="btn s" id="hb" href="#reg">سجّل حضورك</a></div></div></header><div class="w" id="cmode"></div>
@@ -138,12 +139,12 @@ const ini=n=>String(n||'').replace(/^(أ\.د\.|د\.|أ\.)\s*/,'')[0]||'؟',av=(n
 const msg=(i,t,p)=>`<div class="cardx" style="text-align:center"><div style="font-size:48px">${i}</div><h3>${t}</h3><p style="color:var(--mut)">${p}</p></div>`;
 db.doc('config/main').onSnapshot(s=>{C=s.data()||{};$('#nt').style.display=C.notice?'block':'none';$('#nt').textContent=C.notice?'📢 '+C.notice:'';const st=C.state||'before',n=C.count||0;
 $('#bar').style.width=C.limit?Math.min(100,n/C.limit*100)+'%':(st=='live'?'100%':'0%');
-$('#left').textContent=st=='live'?`🟢 المؤتمر جارٍ الآن • ${n} حاضر`:st=='ended'?'🏁 انتهى المؤتمر • شكراً لحضوركم':'⏳ المؤتمر لسه ما بدأش';
-$('#hb').textContent=me?'حضوري':'سجّل حضورك';if(qp.get('cert'))certMode();else view()},()=>qp.get('cert')?certMode():view());
+$('#left').textContent=st=='live'?`🟢 الندوة جارية الآن • ${n} حاضر`:st=='ended'?'🏁 انتهت الندوة • شكراً لحضوركم':'⏳ الندوة لسه ما بدأتش';
+$('#hb').textContent=me?'حضوري':'سجّل حضورك';if(qp.get('verify'))verifyMode();else if(qp.get('cert'))certMode();else view()},()=>qp.get('verify')?verifyMode():qp.get('cert')?certMode():view());
 function view(){if(ed)return;const st=(C&&C.state)||'before',full=C&&C.limit&&C.count>=C.limit,k=me?'m'+(C&&C.certs):st+full;if(k==lk&&$('#rg').innerHTML)return;lk=k;
 if(me)return card();
-if(st=='before')return $('#rg').innerHTML=msg('⏳','المؤتمر لسه ما بدأش','التسجيل بيتفتح أول ما المنظم يعلن بداية المؤتمر. افتح اللينك تاني وقتها.');
-if(st=='ended')return $('#rg').innerHTML=msg('🏁','المؤتمر انتهى','التسجيل مقفول. لو كنت سجّلت حضورك افتح اللينك من نفس الموبايل لتحصل على شهادتك.');
+if(st=='before')return $('#rg').innerHTML=msg('⏳','الندوة لسه ما بدأتش','التسجيل بيتفتح أول ما المنظم يعلن بداية الندوة. افتح اللينك تاني وقتها.');
+if(st=='ended')return $('#rg').innerHTML=msg('🏁','الندوة انتهت','التسجيل مقفول. لو كنت سجّلت حضورك افتح اللينك من نفس الموبايل لتحصل على شهادتك.');
 if(full)return $('#rg').innerHTML=msg('😔','اكتمل العدد','وصلنا للحد الأقصى للحضور.');
 form()}
 function form(){setTimeout(fp,50);const m=me||{};$('#rg').innerHTML=`<div class="cardx" oninput="fp()" onchange="fp()"><div class="fp"><u id="fpb"></u></div><label class="up" style="margin-bottom:6px"><input type="file" id="f" accept="image/*" hidden>${photo?`<img id="pv" src="${photo}" alt="">`:'<span id="pv">📷<br>صورتك<br><small>(اختياري)</small></span>'}</label>
@@ -163,7 +164,7 @@ await db.runTransaction(async t=>{const c=await t.get(cf),u=await t.get(uq),x=c.
 if(x.state!='live')throw'NOTLIVE';if(x.limit&&x.count>=x.limit)throw'FULL';if(u.exists)throw'DUP';
 t.set(uq,{sid:id});t.set(db.doc('students/'+id),{...d,checkedIn:true,at:TS(),by:'self',ts:TS()});t.update(cf,{count:(x.count||0)+1})});
 me={id,...d};setTimeout(confetti,400)}
-localStorage.setItem(LS,JSON.stringify(me));ed=0;lk='m'+(C&&C.certs);card();$('#reg').scrollIntoView()}catch(x){err(x=='NOTLIVE'?'المؤتمر مش شغال دلوقتي':x=='FULL'?'اكتمل العدد':x=='DUP'?'الكود الجامعي ده مسجل قبل كده':'حصل خطأ، اتأكد من النت وحاول تاني')}}
+localStorage.setItem(LS,JSON.stringify(me));ed=0;lk='m'+(C&&C.certs);card();$('#reg').scrollIntoView()}catch(x){err(x=='NOTLIVE'?'الندوة مش شغالة دلوقتي':x=='FULL'?'اكتمل العدد':x=='DUP'?'الكود الجامعي ده مسجل قبل كده':'حصل خطأ، اتأكد من النت وحاول تاني')}}
 function card(){$('#hb').textContent='حضوري';
 $('#rg').innerHTML=`<div class="cardx tk"><div class="top"><div>✅ تم تسجيل حضورك</div><b>${esc(E.title)}</b></div>${av(me.name,me.photo)}<h3 style="margin:8px 0 0">${esc(me.name)}</h3><div dir="ltr" style="color:var(--mut)">${esc(me.nameEn)}</div><small style="color:var(--mut)">${esc(me.email||'')}</small>
 <div class="tabs"><button id="t1" onclick="tb('q')">💬 الأسئلة</button><button id="t2" onclick="tb('c')">🎓 شهادتي</button></div><div id="tc" style="padding:0 14px 14px;text-align:right"></div><button class="lk" style="color:var(--p)" onclick="ed=1;form()">تعديل بياناتي</button></div>`;
@@ -174,31 +175,34 @@ function rq(){const el=$('#ql');if(!el)return;const v=JSON.parse(localStorage.qv
 async function sq(){const t=$('#qt').value.trim();if(!t)return;if(Date.now()-(+localStorage.ql||0)<15000)return alert('استنى شوية قبل السؤال اللي بعده');
 try{await db.collection('questions').add({text:t,name:me.name.split(' ')[0],sid:me.id,anon:$('#qa').checked,votes:0,answer:'',hidden:false,ts:TS()});localStorage.ql=Date.now();$('#qt').value=''}catch(e){alert('مقدرتش أبعت السؤال، اتأكد من النت')}}
 async function vt(id){const v=JSON.parse(localStorage.qv||'[]');if(v.includes(id))return;v.push(id);localStorage.qv=JSON.stringify(v);try{await db.doc('questions/'+id).update({votes:firebase.firestore.FieldValue.increment(1)})}catch(e){}rq()}
-function cUI(){const el=$('#tc');if(!C||!C.certs)return el.innerHTML='<div class="cardx" style="text-align:center;background:var(--inp)">🔒<br><b>الشهادات لسه ما اتفتحتش</b><p style="color:var(--mut)">هتتفتح بعد انتهاء المؤتمر، وهيوصلك لينك شهادتك على الواتس أو الإيميل، وتقدر كمان تفتح الصفحة دي تاني.</p><small dir="ltr">'+esc(me.nameEn)+'</small></div>';el.innerHTML='<div id="cz"></div>';cz()}
+function cUI(){const el=$('#tc');if(!C||!C.certs)return el.innerHTML='<div class="cardx" style="text-align:center;background:var(--inp)">🔒<br><b>الشهادات لسه ما اتفتحتش</b><p style="color:var(--mut)">هتتفتح بعد انتهاء الندوة، وهيوصلك لينك شهادتك على الواتس أو الإيميل، وتقدر كمان تفتح الصفحة دي تاني.</p><small dir="ltr">'+esc(me.nameEn)+'</small></div>';el.innerHTML='<div id="cz"></div>';cz()}
 function cz(){const el=$('#cz');if(!el)return;if(localStorage.conf_fb==me.id)return czBtn();
-el.innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#fffbea"><b>🎓 قيّم المؤتمر قبل شهادتك (دقيقة)</b>${[['s','التقييم العام'],['c','المحتوى العلمي'],['o','التنظيم']].map(([k,l])=>`<div style="margin-top:8px">${l}<div style="font-size:30px;direction:ltr">${[1,2,3,4,5].map(i=>`<span class="sr" data-k="${k}" onclick="rt('${k}',${i})">☆</span>`).join('')}</div></div>`).join('')}<div style="margin-top:8px">هتنصح زمايلك بمؤتمر زي ده؟</div><div class="row" style="padding:6px 0"><button class="btn g" onclick="rc('نعم',this)">نعم 👍</button><button class="btn g" onclick="rc('ممكن',this)">ممكن</button><button class="btn g" onclick="rc('لا',this)">لا</button></div><input id="cm" placeholder="رأيك أو اقتراحك (اختياري)"><button class="btn" style="width:100%;margin-top:10px" onclick="sf()">إرسال</button></div>`}
+el.innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#fffbea"><b>🎓 قيّم الندوة قبل شهادتك (دقيقة)</b>${[['s','التقييم العام'],['c','المحتوى العلمي'],['o','التنظيم']].map(([k,l])=>`<div style="margin-top:8px">${l}<div style="font-size:30px;direction:ltr">${[1,2,3,4,5].map(i=>`<span class="sr" data-k="${k}" onclick="rt('${k}',${i})">☆</span>`).join('')}</div></div>`).join('')}<div style="margin-top:8px">هتنصح زمايلك بندوة زي دي؟</div><div class="row" style="padding:6px 0"><button class="btn g" onclick="rc('نعم',this)">نعم 👍</button><button class="btn g" onclick="rc('ممكن',this)">ممكن</button><button class="btn g" onclick="rc('لا',this)">لا</button></div><input id="cm" placeholder="رأيك أو اقتراحك (اختياري)"><button class="btn" style="width:100%;margin-top:10px" onclick="sf()">إرسال</button></div>`}
 function rt(k,n){R[k]=n;document.querySelectorAll('.sr[data-k="'+k+'"]').forEach((e,i)=>e.textContent=i<n?'★':'☆')}
 function rc(v,b){R.r=v;b.parentNode.querySelectorAll('button').forEach(x=>x.className='btn g');b.className='btn'}
 async function sf(){if(!R.s)return alert('قيّم التقييم العام على الأقل');try{await db.doc('feedback/'+me.id).set({stars:R.s,content:R.c||0,org:R.o||0,rec:R.r||'',comment:$('#cm').value.trim(),ts:TS()})}catch(e){}localStorage.conf_fb=me.id;czBtn()}
 function czBtn(){$('#cz').innerHTML=`<div class="cardx" style="margin:0 0 10px;background:#ecfdf5;text-align:center"><b>🎓 شهادتك جاهزة 🎉</b><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`}
+async function verifyMode(){document.body.classList.add('cm');const el=$('#cmode'),id=(qp.get('verify')||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+try{const s=await db.doc('students/'+id).get();
+if(!s.exists||!s.data().checkedIn)return el.innerHTML=msg('❌','شهادة غير صالحة','الكود ده مش موجود في سجل حضور الندوة.');
+const d=s.data(),a=d.at&&d.at.toDate?d.at.toDate():null,row=(k,v)=>v?`<div style="display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px dashed var(--bd)"><span style="color:var(--mut)">${k}</span><b style="text-align:left">${v}</b></div>`:'';
+el.innerHTML=`<div class="cardx" style="text-align:center;margin-top:16px"><div style="font-size:54px">✅</div><h2 style="margin:6px 0;color:#15803d">شهادة صحيحة وموثّقة</h2><p style="color:var(--mut);margin:0 0 10px">الشخص ده سجّل حضوره فعلاً في الندوة</p><div style="text-align:right"><h3 style="margin:8px 0 0">${esc(d.name)}</h3><div dir="ltr" style="color:var(--mut);text-align:right">${esc(d.nameEn||'')}</div>${row('الندوة',esc(E.title))}${row('التاريخ',D?D.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'}):'')}${row('المكان',esc(E.place||''))}${row('الكود الجامعي',esc(d.univ||''))}${row('الفرقة',esc(d.year||''))}${row('وقت تسجيل الحضور',a?a.toLocaleString('ar-EG-u-nu-latn'):'')}${row('كود الشهادة','<span dir="ltr">'+esc(id)+'</span>')}</div></div>`}catch(e){el.innerHTML=msg('⚠️','مشكلة اتصال','حاول تاني.')}}
 async function certMode(){document.body.classList.add('cm');const el=$('#cmode'),id=(qp.get('cert')||'').toUpperCase().replace(/\//g,'');
-if(!C||!C.certs)return el.innerHTML=msg('🔒','الشهادات لسه ما اتفتحتش','هتتاح بعد انتهاء المؤتمر، جرّب تفتح اللينك تاني بعدين.');
+if(!C||!C.certs)return el.innerHTML=msg('🔒','الشهادات لسه ما اتفتحتش','هتتاح بعد انتهاء الندوة، جرّب تفتح اللينك تاني بعدين.');
 try{const s=await db.doc('students/'+id).get();if(!s.exists)return el.innerHTML=msg('❌','اللينك غير صحيح','اتأكد من اللينك اللي وصلك.');me={id,...s.data()};
 el.innerHTML=`<div class="cardx" style="text-align:center;margin-top:16px"><div style="font-size:46px">🎓</div><h2 style="margin:6px 0">${esc(me.name)}</h2><div dir="ltr" style="color:var(--mut)">${esc(me.nameEn)}</div><p style="color:var(--mut)">شهادة حضور ${esc(E.title)}</p><div class="row" style="padding:10px 0 0"><button class="btn" onclick="cert('pdf')">تحميل PDF</button><button class="btn g" onclick="cert('png')">صورة PNG</button></div></div>`}catch(e){el.innerHTML=msg('⚠️','مشكلة اتصال','حاول تاني.')}}
-async function cert(t){await document.fonts.load('100px "Great Vibes"');const c=document.createElement('canvas');c.width=1754;c.height=1240;const x=c.getContext('2d'),m=877;x.textAlign='center';
-x.fillStyle='#fffdf7';x.fillRect(0,0,1754,1240);x.strokeStyle='#c9a227';x.lineWidth=14;x.strokeRect(40,40,1674,1160);x.lineWidth=3;x.strokeRect(72,72,1610,1096);
-const g=x.createLinearGradient(0,0,1754,0);g.addColorStop(0,'#0d9488');g.addColorStop(1,'#0ea5e9');x.fillStyle=g;x.fillRect(72,72,1610,16);
-x.fillRect(m-20,130,40,110);x.fillRect(m-55,165,110,40);
-x.fillStyle='#0b3b3c';x.font='bold 100px Georgia,serif';x.fillText('CERTIFICATE',m,380);x.fillStyle='#8a6d00';x.font='40px Georgia,serif';x.fillText('O F   A T T E N D A N C E',m,445);
-x.fillStyle='#5b7f80';x.font='italic 36px Georgia,serif';x.fillText('This certificate is proudly presented to',m,560);
-x.fillStyle='#0d9488';x.font='150px "Great Vibes",cursive';x.fillText(me.nameEn,m,745);
-x.strokeStyle='#c9a227';x.lineWidth=2;x.beginPath();x.moveTo(m-420,785);x.lineTo(m+420,785);x.stroke();
-x.fillStyle='#5b7f80';x.font='36px Georgia,serif';x.fillText('in recognition of attending',m,855);x.fillStyle='#0b3b3c';x.font='bold 54px Georgia,serif';x.fillText(E.titleEn||E.title,m,930);
-x.fillStyle='#5b7f80';x.font='30px Georgia,serif';x.fillText(D?D.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'',m,990);
-x.fillStyle='#c9a227';x.beginPath();x.arc(m,1080,48,0,7);x.fill();x.fillStyle='#fff';x.font='bold 44px Georgia,serif';x.fillText('★',m,1095);
-x.strokeStyle='#0b3b3c';x.lineWidth=2;x.beginPath();x.moveTo(250,1085);x.lineTo(600,1085);x.moveTo(1154,1085);x.lineTo(1504,1085);x.stroke();
-x.fillStyle='#5b7f80';x.font='26px Georgia,serif';x.fillText(E.organizerEn||E.organizer||'Organizing Committee',425,1125);x.fillText('Organizing Committee',1329,1125);x.font='20px monospace';x.fillText('ID: '+me.id,m,1150);
+async function cert(t){await document.fonts.load('100px "Great Vibes"');
+const im=new Image();im.src='cert-template.jpg';await im.decode();
+const c=document.createElement('canvas');c.width=1536;c.height=1024;const x=c.getContext('2d');x.drawImage(im,0,0,1536,1024);
+x.textAlign='center';x.fillStyle='#0a2a66';let fs=76;const nm=(me.nameEn||me.name||'').trim();
+do{x.font=fs+'px "Great Vibes",cursive';fs-=3}while(x.measureText(nm).width>760&&fs>38);
+x.fillText(nm,768,446);
+const u=new URL('./?verify='+me.id,location.href).href,q=qrcode(0,'M');q.addData(u);q.make();
+const qi=new Image();qi.src=q.createDataURL(8,0);await qi.decode();
+x.fillStyle='#fff';x.beginPath();x.roundRect?x.roundRect(1366,772,150,186,14):x.rect(1366,772,150,186);x.fill();x.strokeStyle='#c9a227';x.lineWidth=3;x.stroke();
+x.imageSmoothingEnabled=false;x.drawImage(qi,1379,785,124,124);x.imageSmoothingEnabled=true;
+x.fillStyle='#0a2a66';x.font='bold 13px Arial,sans-serif';x.fillText('SCAN TO VERIFY',1441,928);x.font='13px monospace';x.fillText(me.id,1441,946);
 if(t=='png'){const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='certificate-'+me.id+'.png';a.click()}
-else{const p=new window.jspdf.jsPDF({orientation:'l',unit:'mm',format:'a4'});p.addImage(c.toDataURL('image/jpeg',.92),'JPEG',0,0,297,210);p.save('certificate-'+me.id+'.pdf')}}
+else{const p=new window.jspdf.jsPDF({orientation:'l',unit:'mm',format:[297,198]});p.addImage(c.toDataURL('image/jpeg',.93),'JPEG',0,0,297,198);p.save('certificate-'+me.id+'.pdf')}}
 function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;z-index:98;pointer-events:none';c.width=innerWidth;c.height=innerHeight;document.body.appendChild(c);const x=c.getContext('2d'),P=Array.from({length:150},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,r:4+Math.random()*6,vx:Math.random()*4-2,vy:2+Math.random()*4,c:['#0d9488','#38bdf8','#fde047','#fb7185','#34d399'][Math.floor(Math.random()*5)]}));let f=0;(function a(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.r,p.r*1.6)});if(++f<180)requestAnimationFrame(a);else c.remove()})()}
 </script></body></html>
